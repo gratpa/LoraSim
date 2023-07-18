@@ -190,7 +190,7 @@ contextMenuItems.value = [
       valueStore.coordGWs.push(val.coordinate)
       valueStore.setNewGW(val.coordinate)
       valueStore.idGW = 2000 + valueStore.coordGWs.length
-      console.log(val)
+
       const feature = new Feature({
         geometry: new Geom.Point(val.coordinate)
       })

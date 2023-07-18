@@ -54,7 +54,6 @@ export const useValueStore = defineStore('valueStore', () => {
   const setPoint = (event: SelectEvent) => {
     //@ts-ignore
     selectedCoords.value = event.selected[0].values_.geometry.flatCoordinates
-    console.log(event)
     allSensors.value.find((element) => element.coords === selectedCoords.value)
     sensorData.value = allSensors.value.find(
       (element) =>
