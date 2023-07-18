@@ -1,14 +1,25 @@
 <template>
   <div>Gateways:</div>
   <div v-for="gw of valueStore.allGWs" :key="gw.id">
-    <div>Id {{ gw.id }}</div>
-    <div>Has coverage? {{ gw.hasCoverage }}</div>
-    <div>
+    <div
+      :class="[valueStore.GWData?.id === gw.id ? 'bg-cyan-800 text-cyan-100' : 'bg-cyan-800/20']"
+    >
+      Id {{ gw.id }}
+    </div>
+    <div
+      :class="[valueStore.GWData?.id === gw.id ? 'bg-cyan-800 text-cyan-100' : 'bg-cyan-800/20']"
+    >
+      Coverage
+      <input type="checkbox" id="checkbox" v-model="gw.hasCoverage" />
+      <label for="checkbox"></label>
+    </div>
+    <div
+      :class="[valueStore.GWData?.id === gw.id ? 'bg-cyan-800 text-cyan-100' : 'bg-cyan-800/20']"
+    >
       Scope:
       <input
-        @keyup.enter="setInputScope"
-        class="border-black border-2"
-        v-model.number="gw.scopeGWs"
+        class="border-black border-2 text-black"
+        v-model.number="gw.scope"
         placeholder="Scope"
       />
     </div>
@@ -16,10 +27,6 @@
 </template>
 <script setup lang="ts">
 import { useValueStore } from '@/stores/valueStore'
-import { ref } from 'vue'
-const valueStore = useValueStore()
 
-const setInputScope = () => {
-  console.log(valueStore.allGWs)
-}
+const valueStore = useValueStore()
 </script>

@@ -24,13 +24,33 @@
     </ol-image-layer>
 
     <ol-context-menu-control :items="contextMenuItems" />
-    <ol-vector-layer>
-      <ol-interaction-select @select="valueStore.setSensors" :hitTolerance="2">
-        <ol-style>
-          <ol-style-icon :src="red" :scale="0.5" :attributions="markerCopyright"></ol-style-icon>
-        </ol-style>
-      </ol-interaction-select>
+    <ol-interaction-select
+      @select="valueStore.setSensors"
+      :condition="selectCondition"
+      :filter="selectInteactionFilter"
+    >
+      <ol-style>
+        <ol-style-icon :src="red" :scale="0.5" :attributions="markerCopyright"></ol-style-icon>
+      </ol-style>
+    </ol-interaction-select>
 
+    <ol-overlay
+      :position="valueStore.selectedCoords"
+      v-if="valueStore.sensorData && valueStore.send === false"
+    >
+      <div class="bg-cyan-950/80 text-cyan-100">
+        ID: {{ valueStore.sensorData.id }} Scope: {{ valueStore.sensorData.scope }}
+      </div>
+    </ol-overlay>
+    <ol-overlay
+      :position="valueStore.selectedCoords"
+      v-if="valueStore.GWData && valueStore.send === false"
+    >
+      <div class="bg-cyan-950/80 text-cyan-100">
+        ID: {{ valueStore.GWData.id }} Scope: {{ valueStore.GWData.scope }}
+      </div>
+    </ol-overlay>
+    <ol-vector-layer>
       <ol-source-vector ref="sensors"></ol-source-vector>
 
       <ol-style>
@@ -47,7 +67,7 @@
       <ol-vector-layer>
         <ol-source-vector>
           <ol-feature>
-            <ol-geom-circle :center="sensor.coords" :radius="sensor.scopeSensors"></ol-geom-circle>
+            <ol-geom-circle :center="sensor.coords" :radius="sensor.scope"></ol-geom-circle>
             <ol-style>
               <ol-style-stroke color="red" :width="3"></ol-style-stroke>
               <ol-style-fill color="rgba(255,200,0,0.2)"></ol-style-fill>
@@ -60,7 +80,7 @@
       <ol-vector-layer>
         <ol-source-vector>
           <ol-feature>
-            <ol-geom-circle :center="gw.coords" :radius="gw.scopeGWs"></ol-geom-circle>
+            <ol-geom-circle :center="gw.coords" :radius="gw.scope"></ol-geom-circle>
             <ol-style>
               <ol-style-stroke color="black" :width="3"></ol-style-stroke>
               <ol-style-fill color="rgba(255,200,0,0.2)"></ol-style-fill>
@@ -69,18 +89,31 @@
         </ol-source-vector>
       </ol-vector-layer>
     </div>
-    <div v-for="[id, coord] of valueStore.allCoord" :key="id">
-      <ol-vector-layer>
-        <ol-source-vector>
+
+    <ol-vector-layer>
+      <ol-source-vector>
+        <ol-feature ref="animationPath">
+          <ol-geom-line-string :coordinates="valueStore.allCoord"></ol-geom-line-string>
+          <ol-style-flowline color="#154815" color2="#8FBC8F" :width="5" :width2="5" :arrow="1" />
+        </ol-feature>
+        <ol-animation-path
+          v-if="valueStore.send"
+          :path="animationPath?.feature"
+          :duration="4000"
+          :repeat="20"
+        >
           <ol-feature>
-            <ol-geom-line-string :coordinates="[coord]"></ol-geom-line-string>
+            <ol-geom-point :coordinates="valueStore.allCoord[0]"></ol-geom-point>
             <ol-style>
-              <ol-style-stroke color="red" :width="2"></ol-style-stroke>
+              <ol-style-circle :radius="5">
+                <ol-style-fill color="#8FBC8F"></ol-style-fill>
+                <ol-style-stroke color="#154815" :width="2"></ol-style-stroke>
+              </ol-style-circle>
             </ol-style>
           </ol-feature>
-        </ol-source-vector>
-      </ol-vector-layer>
-    </div>
+        </ol-animation-path>
+      </ol-source-vector>
+    </ol-vector-layer>
   </ol-map>
 </template>
 
@@ -89,12 +122,13 @@ import { useValueStore } from '@/stores/valueStore'
 const valueStore = useValueStore()
 
 import { ref, reactive, inject } from 'vue'
-
+import type AnimationPath from 'ol-ext/featureanimation/Path'
 import gateway from '@/assets/gateway.png'
 import sensor from '@/assets/sensor.png'
 import background from '@/assets/background.jpg'
 import red from '@/assets/red.png'
 
+const animationPath = ref<{ feature: AnimationPath } | null>(null)
 const zoom = ref(2)
 const rotation = ref(0)
 const size = ref([7001, 4001])
@@ -113,6 +147,9 @@ const markerCopyright = ref(
   `<a target="_blank" href="https://icons8.com/icon/2362/sensor">Sensor</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a> `
 )
 const contextMenuItems = ref([] as unknown)
+const selectConditions = inject('ol-selectconditions')
+
+const selectCondition = selectConditions.singleClick
 
 const sensors = ref()
 const gateways = ref()
