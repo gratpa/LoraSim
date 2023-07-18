@@ -3,14 +3,18 @@
   <div v-for="sensor of valueStore.allSensors" :key="sensor.id">
     <div
       :class="[
-        valueStore.sensorData?.id === sensor.id ? 'bg-cyan-800 text-cyan-100' : 'bg-cyan-800/20'
+        valueStore.sensorData?.id === sensor.id && valueStore.send === false
+          ? 'bg-cyan-800 text-cyan-100'
+          : 'bg-cyan-800/20'
       ]"
     >
       Id {{ sensor.id }}
     </div>
     <div
       :class="[
-        valueStore.sensorData?.id === sensor.id ? 'bg-cyan-800  text-cyan-100' : 'bg-cyan-800/20'
+        valueStore.sensorData?.id === sensor.id && valueStore.send === false
+          ? 'bg-cyan-800  text-cyan-100'
+          : 'bg-cyan-800/20'
       ]"
     >
       Scope:
@@ -24,6 +28,5 @@
 </template>
 <script setup lang="ts">
 import { useValueStore } from '@/stores/valueStore'
-
 const valueStore = useValueStore()
 </script>

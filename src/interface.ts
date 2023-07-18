@@ -10,3 +10,8 @@ export interface IGW {
   scope: number
   hasCoverage: boolean
 }
+
+export interface Icallback {
+  data: null
+  coordinate: number[]
+}

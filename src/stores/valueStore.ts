@@ -2,6 +2,7 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import type { ISensor } from '@/interface'
 import type { IGW } from '@/interface'
+import type { SelectEvent } from 'ol/interaction/Select'
 
 export const useValueStore = defineStore('valueStore', () => {
   class Sensor implements ISensor {
@@ -12,20 +13,6 @@ export const useValueStore = defineStore('valueStore', () => {
       this.coords = coords
     }
   }
-  const allCoord = ref<number[][]>([])
-  const scopeSensors = ref<number>(0)
-  const coordSensors = ref<number[]>([])
-  const idSensor = ref<number>(1000)
-  const selectedCoords = ref<number[]>([])
-  const allSensors = ref<ISensor[]>([])
-
-  const setNewSensor = (coords: number[]) => {
-    const newSensor = new Sensor(coords)
-    allSensors.value.push(newSensor)
-    allCoord.value.push(coords)
-    console.log(coordSensors)
-  }
-
   class GW implements IGW {
     id = idGW.value
     coords
@@ -35,20 +22,37 @@ export const useValueStore = defineStore('valueStore', () => {
       this.coords = coords
     }
   }
-  const scopeGWs = ref<number>(0)
-  const coordGWs = ref<number[]>([])
-  const idGW = ref<number>(2000)
-  const allGWs = ref<IGW[]>([])
-  const send = ref<boolean>(false)
+  const idSensor = ref<number>(1000)
+  const scopeSensors = ref<number>(0)
+  const coordSensors = ref<number[][]>([])
   const sensorData = ref<ISensor>()
+  const allSensors = ref<ISensor[]>([])
+  const idGW = ref<number>(2000)
+  const scopeGWs = ref<number>(0)
+  const coordGWs = ref<number[][]>([])
   const GWData = ref<IGW>()
+  const allGWs = ref<IGW[]>([])
 
+  const send = ref<boolean>(false)
+  const allCoords = ref<number[][]>([])
+  const selectedCoords = ref<number[]>([])
+  const btnName = ref('Start')
+  const canStart = ref<boolean>(false)
+
+  const setNewSensor = (coords: number[]) => {
+    const newSensor = new Sensor(coords)
+    allSensors.value.push(newSensor)
+    allCoords.value.push(coords)
+    canStart.value = true
+  }
   const setNewGW = (coords: number[]) => {
     const newGW = new GW(coords)
     allGWs.value.push(newGW)
-    allCoord.value.push(coords)
+    allCoords.value.push(coords)
+    canStart.value = true
   }
-  const setSensors = (event) => {
+  const setPoint = (event: SelectEvent) => {
+    //@ts-ignore
     selectedCoords.value = event.selected[0].values_.geometry.flatCoordinates
     console.log(event)
     allSensors.value.find((element) => element.coords === selectedCoords.value)
@@ -65,22 +69,32 @@ export const useValueStore = defineStore('valueStore', () => {
     )
   }
 
+  const sendMessage = () => {
+    if (btnName.value === 'Start') {
+      ;(send.value = true), (btnName.value = 'Stop')
+    } else {
+      ;(send.value = false), (btnName.value = 'Start')
+    }
+  }
   return {
+    idSensor,
     scopeSensors,
     coordSensors,
-    idSensor,
+    sensorData,
     allSensors,
-    setNewSensor,
+    idGW,
     scopeGWs,
     coordGWs,
-    idGW,
-    setSensors,
-    selectedCoords,
+    GWData,
     allGWs,
-    setNewGW,
-    allCoord,
     send,
-    sensorData,
-    GWData
+    allCoords,
+    selectedCoords,
+    btnName,
+    canStart,
+    setNewSensor,
+    setNewGW,
+    setPoint,
+    sendMessage
   }
 })
