@@ -6,12 +6,12 @@
   <div>
     <button
       v-show="valueStore.canStart"
-      @click="valueStore.sendMessage()"
+      @click="sendMessage()"
       :class="[
         valueStore.send ? 'border-black border-2 bg-red-500' : 'border-black border-2 bg-green-500'
       ]"
     >
-      {{ valueStore.btnName }}
+      {{ btnName }}
     </button>
   </div>
   <div>Hop counter:</div>
@@ -21,4 +21,15 @@
 import { useValueStore } from '@/stores/valueStore'
 const input = ''
 const valueStore = useValueStore()
+let btnName = 'Start'
+
+const sendMessage = () => {
+  if (btnName === 'Start') {
+    valueStore.send = true
+    btnName = 'Stop'
+  } else {
+    valueStore.send = false
+    btnName = 'Start'
+  }
+}
 </script>

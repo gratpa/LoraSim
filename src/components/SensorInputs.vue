@@ -1,9 +1,9 @@
 <template>
   <div>Sensors:</div>
-  <div v-for="sensor of valueStore.allSensors" :key="sensor.id">
+  <div v-for="sensor of valueStore.sensor.allSensors" :key="sensor.id">
     <div
       :class="[
-        valueStore.sensorData?.id === sensor.id && valueStore.send === false
+        valueStore.sensor.data?.id === sensor.id && !valueStore.send
           ? 'bg-cyan-800 text-cyan-100'
           : 'bg-cyan-800/20'
       ]"
@@ -12,16 +12,16 @@
     </div>
     <div
       :class="[
-        valueStore.sensorData?.id === sensor.id && valueStore.send === false
+        valueStore.sensor.data?.id === sensor.id && !valueStore.send
           ? 'bg-cyan-800  text-cyan-100'
           : 'bg-cyan-800/20'
       ]"
     >
-      Scope:
+      range:
       <input
         class="border-black border-2 text-black"
-        v-model.number="sensor.scope"
-        placeholder="Scope"
+        v-model.number="sensor.range"
+        placeholder="range"
       />
     </div>
   </div>

@@ -13,8 +13,6 @@
     "start": "vite"
   },
   "dependencies": {
-    "@types/geojson": "^7946.0.10",
-    "@types/leaflet": "^1.9.3",
     "ol": "^7.4.0",
     "ol-contextmenu": "^5.2.1",
     "ol-ext": "^4.0.9",

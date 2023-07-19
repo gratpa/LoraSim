@@ -7,17 +7,17 @@
   >
     <ol-view
       ref="view"
-      :center="centerImg"
-      :rotation="rotation"
-      :zoom="zoom"
+      :center="mapSetting.centerImg"
+      :rotation="mapSetting.rotation"
+      :zoom="mapSetting.zoom"
       :projection="projection"
     />
 
     <ol-image-layer id="xkcd">
       <ol-source-image-static
         :url="background"
-        :imageSize="size"
-        :imageExtent="extent"
+        :imageSize="mapSetting.size"
+        :imageExtent="mapSetting.extent"
         :projection="projection"
         :attributions="imgCopyright"
       ></ol-source-image-static>
@@ -37,22 +37,18 @@
       </ol-style>
     </ol-interaction-select>
 
-    <ol-overlay
-      :position="valueStore.selectedCoords"
-      v-if="valueStore.sensorData && valueStore.send === false"
-    >
-      <div class="bg-cyan-950/80 text-cyan-100">
-        ID: {{ valueStore.sensorData.id }} Scope: {{ valueStore.sensorData.scope }}
-      </div>
+    <ol-overlay :position="valueStore.selectedCoords">
+      <div
+        v-if="valueStore.sensor.data?.id && valueStore.send === false && valueStore.selectedCoords"
+        class="bg-cyan-950/80 text-cyan-100"
       >
-    </ol-overlay>
-
-    <ol-overlay
-      :position="valueStore.selectedCoords"
-      v-if="valueStore.GWData && valueStore.send === false"
-    >
-      <div class="bg-cyan-950/80 text-cyan-100">
-        ID: {{ valueStore.GWData.id }} Scope: {{ valueStore.GWData.scope }}
+        ID: {{ valueStore.sensor.data.id }} range: {{ valueStore.sensor.data.range }}
+      </div>
+      <div
+        v-else-if="valueStore.gw.data?.id && valueStore.send === false && valueStore.selectedCoords"
+        class="bg-cyan-950/80 text-cyan-100"
+      >
+        ID: {{ valueStore.gw.data.id }} range: {{ valueStore.gw.data.range }}
       </div>
     </ol-overlay>
 
@@ -69,11 +65,11 @@
         <ol-style-icon :src="gateway" :scale="0.5" :attributions="markerCopyright"></ol-style-icon>
       </ol-style>
     </ol-vector-layer>
-    <div v-for="sensor of valueStore.allSensors" :key="sensor.id" :name="sensor.id">
+    <div v-for="sensor of valueStore.sensor.allSensors" :key="sensor.id" :name="sensor.id">
       <ol-vector-layer>
         <ol-source-vector>
           <ol-feature>
-            <ol-geom-circle :center="sensor.coords" :radius="sensor.scope"></ol-geom-circle>
+            <ol-geom-circle :center="sensor.coords" :radius="sensor.range"></ol-geom-circle>
             <ol-style>
               <ol-style-stroke color="rgb(47,79,79)" :width="3"></ol-style-stroke>
               <ol-style-fill color="rgb(255,215,0,0.2)"></ol-style-fill>
@@ -82,11 +78,11 @@
         </ol-source-vector>
       </ol-vector-layer>
     </div>
-    <div v-for="gw of valueStore.allGWs" :key="gw.id" :name="gw.id">
+    <div v-for="gw of valueStore.gw.allGWs" :key="gw.id" :name="gw.id">
       <ol-vector-layer>
         <ol-source-vector>
           <ol-feature>
-            <ol-geom-circle :center="gw.coords" :radius="gw.scope"></ol-geom-circle>
+            <ol-geom-circle :center="gw.coords" :radius="gw.range"></ol-geom-circle>
             <ol-style>
               <ol-style-stroke color="rgb(0,139,139)" :width="3"></ol-style-stroke>
               <ol-style-fill color="rgb(255,215,0,0.2)"></ol-style-fill>
@@ -99,7 +95,7 @@
     <ol-vector-layer>
       <ol-source-vector>
         <ol-feature ref="animationPath">
-          <ol-geom-line-string :coordinates="valueStore.allCoords"></ol-geom-line-string>
+          <ol-geom-line-string :coordinates="[0, 0, 0]"></ol-geom-line-string>
           <ol-style-flowline color="rgb(0,139,139,0.8)" :width="5" :arrow="1" />
         </ol-feature>
         <ol-animation-path
@@ -109,7 +105,7 @@
           :repeat="20"
         >
           <ol-feature>
-            <ol-geom-point :coordinates="valueStore.allCoords[0]"></ol-geom-point>
+            <ol-geom-point :coordinates="[0, 0, 0]"></ol-geom-point>
             <ol-style>
               <ol-style-circle :radius="4">
                 <ol-style-fill color="rgb(0,139,139,0.8)"></ol-style-fill>
@@ -127,34 +123,24 @@
 import { useValueStore } from '@/stores/valueStore'
 const valueStore = useValueStore()
 
-import { ref, reactive, inject } from 'vue'
+import { ref, inject } from 'vue'
 import type AnimationPath from 'ol-ext/featureanimation/Path'
 import gateway from '@/assets/gateway.png'
 import sensor from '@/assets/sensor.png'
 import background from '@/assets/background.jpg'
 import red from '@/assets/red.png'
 import Feature from 'ol/Feature.js'
+import { mapSetting } from '@/constValues'
+import { projection } from '@/constValues'
 import type { Icallback } from '@/interface'
 
 const animationPath = ref<{ feature: AnimationPath } | null>(null)
-const zoom = ref(2)
-const rotation = ref(0)
-const size = ref([7001, 4001])
-const centerImg = ref([size.value[0] / 2, size.value[1] / 2])
-const extent = ref([0, 0, ...size.value])
-const projection = reactive({
-  code: 'xkcd-image',
-  units: 'pixels',
-  extent: extent
-})
 
-const imgCopyright = ref(
+const imgCopyright =
   '<a href="https://www.freepik.com/free-photo/grunge-black-concrete-textured-background_17118014.htm#query=black&position=3&from_view=search&track=sph">Image by rawpixel.com</a> on Freepik'
-)
-const markerCopyright = ref(
-  `<a target="_blank" href="https://icons8.com/icon/2362/sensor">Sensor</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a> `
-)
-const contextMenuItems = ref([] as unknown)
+
+const markerCopyright = `<a target="_blank" href="https://icons8.com/icon/2362/sensor">Sensor</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a> `
+
 const selectConditions = inject('ol-selectconditions')
 const selectCondition = selectConditions.singleClick
 
@@ -164,16 +150,16 @@ const view = ref()
 
 const Geom = inject('ol-geom')
 
-contextMenuItems.value = [
+const contextMenuItems = ref<unknown[]>([
   { defaultItems: false },
   {
     text: 'Add a Sensor',
     icon: sensor,
     defaultItems: false,
     callback: (val: Icallback) => {
-      valueStore.coordSensors.push(val.coordinate)
+      valueStore.sensor.coord.push(val.coordinate)
       valueStore.setNewSensor(val.coordinate)
-      valueStore.idSensor = 1000 + valueStore.coordSensors.length
+      valueStore.sensor.id = 1000 + valueStore.sensor.coord.length
 
       const feature = new Feature({
         geometry: new Geom.Point(val.coordinate)
@@ -187,9 +173,9 @@ contextMenuItems.value = [
     icon: gateway,
     defaultItems: false,
     callback: (val: Icallback) => {
-      valueStore.coordGWs.push(val.coordinate)
+      valueStore.gw.coord.push(val.coordinate)
       valueStore.setNewGW(val.coordinate)
-      valueStore.idGW = 2000 + valueStore.coordGWs.length
+      valueStore.gw.id = 2000 + valueStore.gw.coord.length
 
       const feature = new Feature({
         geometry: new Geom.Point(val.coordinate)
@@ -198,5 +184,5 @@ contextMenuItems.value = [
     }
   },
   { defaultItems: false }
-]
+])
 </script>
