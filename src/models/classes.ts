@@ -1,5 +1,6 @@
 import type { ISensor } from '@/interface'
 import type { IGW } from '@/interface'
+import type { IAllPaths } from '@/interface'
 
 class Sensor implements ISensor {
   id
@@ -24,4 +25,17 @@ class GW implements IGW {
   }
 }
 
-export { GW, Sensor }
+class AllPaths implements IAllPaths {
+  fc
+  sc
+  d
+  rSensor
+  constructor(fc: number[], sc: number[], d: number, rSensor: number) {
+    this.fc = fc
+    this.sc = sc
+    this.d = d
+    this.rSensor = rSensor
+  }
+}
+
+export { GW, Sensor, AllPaths }

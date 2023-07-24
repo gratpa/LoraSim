@@ -5,7 +5,7 @@ import type { Iprojection } from './interface'
 const mapSetting: ImapSetting = {
   zoom: 2,
   rotation: 0,
-  size: [7001, 4001],
+  size: [1236, 1600],
   get centerImg() {
     return [this.size[0] / 2, this.size[1] / 2]
   },

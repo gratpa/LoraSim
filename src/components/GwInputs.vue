@@ -1,9 +1,14 @@
 <template>
   <div>Gateways:</div>
-  <div v-for="gw of valueStore.gw.allGWs" :key="gw.id">
+  <div
+    v-for="gw of valueStore.gw.allGWs"
+    :key="gw.id"
+    @mouseover=";[(valueStore.settingNodes.selectedCoords = gw.coords), valueStore.setPoint()]"
+    @mouseleave="valueStore.settingNodes.edit = false"
+  >
     <div
       :class="[
-        valueStore.gw.data?.id === gw.id && !valueStore.send
+        valueStore.gw.data?.id === gw.id && valueStore.settingNodes.edit
           ? 'bg-cyan-800 text-cyan-100'
           : 'bg-cyan-800/20'
       ]"
@@ -12,7 +17,7 @@
     </div>
     <div
       :class="[
-        valueStore.gw.data?.id === gw.id && !valueStore.send
+        valueStore.gw.data?.id === gw.id && valueStore.settingNodes.edit
           ? 'bg-cyan-800 text-cyan-100'
           : 'bg-cyan-800/20'
       ]"
@@ -23,17 +28,12 @@
     </div>
     <div
       :class="[
-        valueStore.gw.data?.id === gw.id && !valueStore.send
+        valueStore.gw.data?.id === gw.id && valueStore.settingNodes.edit
           ? 'bg-cyan-800 text-cyan-100'
           : 'bg-cyan-800/20'
       ]"
     >
-      range:
-      <input
-        class="border-black border-2 text-black"
-        v-model.number="gw.range"
-        placeholder="range"
-      />
+      range: {{ Math.ceil(gw.range) }}
     </div>
   </div>
 </template>

@@ -1,6 +1,6 @@
 <template>
   <div class="grid grid-cols-6 justify-center m-8">
-    <div class="col-span-3 h-[550px]">
+    <div class="col-span-3">
       <MapView />
     </div>
     <div><UserInterface /></div>

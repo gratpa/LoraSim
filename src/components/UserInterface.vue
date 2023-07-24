@@ -5,13 +5,19 @@
   </div>
   <div>
     <button
-      v-show="valueStore.canStart"
-      @click="sendMessage()"
-      :class="[
-        valueStore.send ? 'border-black border-2 bg-red-500' : 'border-black border-2 bg-green-500'
-      ]"
+      :disabled="valueStore.settingNodes.edit"
+      v-show="valueStore.settingNodes.start"
+      @click="startClick()"
+      class="'border-black border-2 bg-green-300"
     >
-      {{ btnName }}
+      START
+    </button>
+    <button
+      v-show="valueStore.settingNodes.start"
+      @click="resetClick()"
+      class="'border-black border-2 bg-red-300"
+    >
+      RESET
     </button>
   </div>
   <div>Hop counter:</div>
@@ -19,17 +25,15 @@
 </template>
 <script setup lang="ts">
 import { useValueStore } from '@/stores/valueStore'
+
 const input = ''
 const valueStore = useValueStore()
-let btnName = 'Start'
 
-const sendMessage = () => {
-  if (btnName === 'Start') {
-    valueStore.send = true
-    btnName = 'Stop'
-  } else {
-    valueStore.send = false
-    btnName = 'Start'
-  }
+const startClick = () => {
+  valueStore.findPath()
+}
+
+const resetClick = () => {
+  valueStore.reset()
 }
 </script>

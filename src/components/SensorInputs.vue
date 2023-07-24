@@ -1,9 +1,14 @@
 <template>
   <div>Sensors:</div>
-  <div v-for="sensor of valueStore.sensor.allSensors" :key="sensor.id">
+  <div
+    v-for="sensor of valueStore.sensor.allSensors"
+    :key="sensor.id"
+    @mouseover=";[(valueStore.settingNodes.selectedCoords = sensor.coords), valueStore.setPoint()]"
+    @mouseleave="valueStore.settingNodes.edit = false"
+  >
     <div
       :class="[
-        valueStore.sensor.data?.id === sensor.id && !valueStore.send
+        valueStore.sensor.data?.id === sensor.id && valueStore.settingNodes.edit
           ? 'bg-cyan-800 text-cyan-100'
           : 'bg-cyan-800/20'
       ]"
@@ -12,17 +17,12 @@
     </div>
     <div
       :class="[
-        valueStore.sensor.data?.id === sensor.id && !valueStore.send
+        valueStore.sensor.data?.id === sensor.id && valueStore.settingNodes.edit
           ? 'bg-cyan-800  text-cyan-100'
           : 'bg-cyan-800/20'
       ]"
     >
-      range:
-      <input
-        class="border-black border-2 text-black"
-        v-model.number="sensor.range"
-        placeholder="range"
-      />
+      range: {{ Math.ceil(sensor.range) }}
     </div>
   </div>
 </template>
