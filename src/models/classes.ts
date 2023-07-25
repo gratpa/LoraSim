@@ -29,12 +29,12 @@ class AllPaths implements IAllPaths {
   fc
   sc
   d
-  rSensor
-  constructor(fc: number[], sc: number[], d: number, rSensor: number) {
+  r
+  constructor(fc: number[], sc: number[], d: number, r: number) {
     this.fc = fc
     this.sc = sc
     this.d = d
-    this.rSensor = rSensor
+    this.r = r
   }
 }
 

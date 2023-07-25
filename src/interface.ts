@@ -61,7 +61,7 @@ interface IAllPaths {
   fc: number[]
   sc: number[]
   d: number
-  rSensor: number
+  r: number
 }
 
 interface IAllCoords {
@@ -71,12 +71,16 @@ interface IAllCoords {
 }
 interface IsettingNodes {
   selectedCoords: number[]
+  selectedTable: number[]
   selectedFeatures: unknown
   changedCoords: number[]
   changedRange: number
+  rangeInput: number
   edit: boolean
   start: boolean
   iconVisible: boolean
+  setRange: number
+  setRangeVisible: boolean
 }
 
 interface IcalculatePaths {

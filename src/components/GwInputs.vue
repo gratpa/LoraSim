@@ -3,8 +3,15 @@
   <div
     v-for="gw of valueStore.gw.allGWs"
     :key="gw.id"
-    @mouseover=";[(valueStore.settingNodes.selectedCoords = gw.coords), valueStore.setPoint()]"
-    @mouseleave="valueStore.settingNodes.edit = false"
+    @click="
+      ;[
+        valueStore.selectTable(gw.id),
+        (valueStore.settingNodes.edit = false),
+        (valueStore.settingNodes.selectedCoords = gw.coords),
+        valueStore.setPoint(),
+        (valueStore.settingNodes.setRangeVisible = true)
+      ]
+    "
   >
     <div
       :class="[

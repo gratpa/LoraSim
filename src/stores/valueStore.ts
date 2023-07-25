@@ -6,6 +6,7 @@ import { GW } from '@/models/classes'
 import { Sensor } from '@/models/classes'
 import type { Ievent } from '@/interface'
 import { AllPaths } from '@/models/classes'
+
 import type { IsettingNodes } from '@/interface'
 import type { IcalculatePaths } from '@/interface'
 export const useValueStore = defineStore('valueStore', () => {
@@ -28,12 +29,16 @@ export const useValueStore = defineStore('valueStore', () => {
 
   const settingNodes = ref<IsettingNodes>({
     selectedCoords: [],
+    selectedTable: [],
     selectedFeatures: 0,
     changedCoords: [],
     changedRange: 0,
+    rangeInput: 100,
     edit: false,
     start: false,
-    iconVisible: false
+    iconVisible: false,
+    setRange: 0,
+    setRangeVisible: false
   })
 
   const calculatePaths = ref<IcalculatePaths>({
@@ -81,10 +86,26 @@ export const useValueStore = defineStore('valueStore', () => {
         )
       )
     )
-
-    calculatePaths.value.paths = calculatePaths.value.allPaths.filter(
-      (path) => path.d < path.rSensor
+    gw.value.allGWs.forEach((gwFc) =>
+      gw.value.allGWs.forEach((gwSc) =>
+        calculatePaths.value.allPaths.push(
+          new AllPaths(
+            [gwFc.coords[0], gwFc.coords[1]],
+            [gwSc.coords[0], gwSc.coords[1]],
+            Math.hypot(gwSc.coords[0] - gwFc.coords[0], gwSc.coords[1] - gwFc.coords[1]),
+            gwFc.range
+          ),
+          new AllPaths(
+            [gwFc.coords[0], gwFc.coords[1]],
+            [gwSc.coords[0], gwSc.coords[1]],
+            Math.hypot(gwFc.coords[0] - gwSc.coords[0], gwFc.coords[1] - gwSc.coords[1]),
+            gwFc.range
+          )
+        )
+      )
     )
+
+    calculatePaths.value.paths = calculatePaths.value.allPaths.filter((path) => path.d < path.r)
   }
 
   const reset = () => {
@@ -112,10 +133,21 @@ export const useValueStore = defineStore('valueStore', () => {
     settingNodes.value.changedCoords = event.selected[0].values_.geometry.flatCoordinates
     setPoint()
   }
+  const selectTable = (id: number) => {
+    sensor.value.allSensors.forEach(
+      (sensor) =>
+        sensor.id === id ? (sensor.range = settingNodes.value.rangeInput) : sensor.range,
+      (settingNodes.value.setRange = id)
+    )
+    gw.value.allGWs.forEach(
+      (gw) => (gw.id === id ? (gw.range = settingNodes.value.rangeInput) : gw.range),
+      (settingNodes.value.setRange = id)
+    )
+  }
 
   const checkExistedCoords = (event: Ievent) => {
     const newCoords = event.selected[0].values_.geometry.flatCoordinates
-    console.log(newCoords)
+
     const existedSensors = sensor.value.allSensors.find(
       (element) => element.coords[0] === newCoords[0] && element.coords[1] === newCoords[1]
     )
@@ -169,6 +201,7 @@ export const useValueStore = defineStore('valueStore', () => {
     reset,
     select,
     setNewRange,
-    checkExistedCoords
+    checkExistedCoords,
+    selectTable
   }
 })

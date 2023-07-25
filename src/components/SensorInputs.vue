@@ -3,8 +3,15 @@
   <div
     v-for="sensor of valueStore.sensor.allSensors"
     :key="sensor.id"
-    @mouseover=";[(valueStore.settingNodes.selectedCoords = sensor.coords), valueStore.setPoint()]"
-    @mouseleave="valueStore.settingNodes.edit = false"
+    @click="
+      ;[
+        valueStore.selectTable(sensor.id),
+        (valueStore.settingNodes.edit = false),
+        (valueStore.settingNodes.selectedCoords = sensor.coords),
+        valueStore.setPoint(),
+        (valueStore.settingNodes.setRangeVisible = true)
+      ]
+    "
   >
     <div
       :class="[
