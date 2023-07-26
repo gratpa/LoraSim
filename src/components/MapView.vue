@@ -3,16 +3,12 @@
     ref="map"
     :loadTilesWhileAnimating="true"
     :loadTilesWhileInteracting="true"
-    class="h-[900px] w-[700px] border-2 border-black"
-    @pointermove=";[(valueStore.settingNodes.iconVisible = true)]"
-    @click="valueStore.setNewRange()"
+    class="h-full w-full border-2 border-black"
+    @pointermove="valueStore.settingNodes.iconVisible = true"
   >
     <ol-view
       ref="view"
-      :center="mapSetting.centerImg"
       :rotation="mapSetting.rotation"
-      :maxZoom="mapSetting.zoom + 2"
-      :minZoom="mapSetting.zoom"
       :zoom="mapSetting.zoom"
       :projection="projection"
     />
@@ -27,46 +23,33 @@
         :updateWhileInteracting="true"
       ></ol-source-image-static>
     </ol-image-layer>
-
     <ol-context-menu-control :items="contextMenuItems" :defaultItems="false" :width="150" />
-    <ol-interaction-select @select="valueStore.select" :condition="selectCondition"
-      ><ol-style>
-        <ol-style-stroke color="rgb(220, 20, 60)" :width="5"></ol-style-stroke>
-        <ol-style-fill color="rgb(255,215,0,0.2)"></ol-style-fill>
-      </ol-style>
-    </ol-interaction-select>
-    <div v-if="!valueStore.settingNodes.edit">
-      <ol-interaction-select
-        @select="valueStore.checkExistedCoords"
-        :condition="selectExistedCoords"
-        ><ol-style>
-          <ol-style-stroke color="rgb(0,139,139)" :width="3"></ol-style-stroke>
-          <ol-style-fill color="rgb(255,215,0,0.2)"></ol-style-fill>
-        </ol-style>
-      </ol-interaction-select>
+    <div v-for="sensor of valueStore.sensor.allSensors" :key="sensor.id">
+      <ol-overlay :position="[sensor.coords[0] - 45, sensor.coords[1] - 30]">
+        <div
+          :class="
+            valueStore.sensor.data?.id === sensor.id && valueStore.settingNodes.edit
+              ? 'bg-cyan-100 text-cyan-950 border-cyan-950 border-2'
+              : 'bg-cyan-950/80 text-cyan-100'
+          "
+        >
+          ID: {{ sensor.id }}
+        </div>
+      </ol-overlay>
     </div>
-    <ol-overlay :position="valueStore.settingNodes.selectedCoords">
-      <div
-        v-if="
-          valueStore.sensor.data?.id &&
-          valueStore.settingNodes.edit &&
-          valueStore.settingNodes.selectedCoords
-        "
-        class="bg-cyan-950/80 text-cyan-100"
-      >
-        ID: {{ valueStore.sensor.data.id }} range: {{ Math.ceil(valueStore.sensor.data.range) }}
-      </div>
-      <div
-        v-else-if="
-          valueStore.gw.data?.id &&
-          valueStore.settingNodes.edit &&
-          valueStore.settingNodes.selectedCoords
-        "
-        class="bg-cyan-950/80 text-cyan-100"
-      >
-        ID: {{ valueStore.gw.data.id }} range: {{ Math.ceil(valueStore.gw.data.range) }}
-      </div>
-    </ol-overlay>
+    <div v-for="gw of valueStore.gw.allGWs" :key="gw.id">
+      <ol-overlay :position="[gw.coords[0] - 45, gw.coords[1] - 30]">
+        <div
+          :class="
+            valueStore.gw.data?.id === gw.id && valueStore.settingNodes.edit
+              ? 'bg-cyan-100 text-cyan-950 border-cyan-950 border-2'
+              : 'bg-cyan-950/80 text-cyan-100'
+          "
+        >
+          ID: {{ gw.id }}
+        </div>
+      </ol-overlay>
+    </div>
     <div v-if="valueStore.settingNodes.iconVisible">
       <ol-vector-layer>
         <ol-source-vector ref="sensors" :updateWhileInteracting="true"> </ol-source-vector>
@@ -87,15 +70,9 @@
         </ol-style>
       </ol-vector-layer>
     </div>
-    <div v-for="sensor of valueStore.sensor.allSensors" :key="sensor.id" :name="sensor.id">
+    <div v-for="sensor of valueStore.sensor.allSensors" :key="sensor.id">
       <ol-vector-layer>
         <ol-source-vector>
-          <ol-interaction-modify
-            v-if="valueStore.settingNodes.edit"
-            :features="valueStore.settingNodes.selectedFeatures"
-          >
-          </ol-interaction-modify>
-
           <ol-feature>
             <ol-geom-circle
               :center="sensor.coords"
@@ -104,26 +81,20 @@
             ></ol-geom-circle>
             <ol-style>
               <ol-style-stroke color="rgb(0,139,139)" :width="3"></ol-style-stroke>
-              <ol-style-fill color="rgb(255,215,0,0.2)"></ol-style-fill>
+              <ol-style-fill color="rgb(255,215,0,0.1)"></ol-style-fill>
             </ol-style>
           </ol-feature>
         </ol-source-vector>
       </ol-vector-layer>
     </div>
-    <div v-for="gw of valueStore.gw.allGWs" :key="gw.id" :name="gw.id">
+    <div v-for="gw of valueStore.gw.allGWs" :key="gw.id">
       <ol-vector-layer>
         <ol-source-vector>
-          <ol-interaction-modify
-            v-if="valueStore.settingNodes.edit"
-            :features="valueStore.settingNodes.selectedFeatures"
-          >
-          </ol-interaction-modify>
-
           <ol-feature>
             <ol-geom-circle :center="gw.coords" :radius="gw.range"></ol-geom-circle>
             <ol-style>
               <ol-style-stroke color="rgb(0,139,139)" :width="3"></ol-style-stroke>
-              <ol-style-fill color="rgb(255,215,0,0.2)"></ol-style-fill>
+              <ol-style-fill color="rgb(255,215,0,0.1)"></ol-style-fill>
             </ol-style>
           </ol-feature>
         </ol-source-vector>
@@ -134,7 +105,7 @@
       <ol-source-vector>
         <ol-feature v-for="path of valueStore.calculatePaths.paths" :key="path.d">
           <ol-geom-line-string :coordinates="[path.fc, path.sc]"></ol-geom-line-string>
-          <ol-style-flowline color="rgb(0,139,139,0.8)" :width="5" :arrow="1" />
+          <ol-style-flowline color="blue" :width="2" :arrow="1" />
         </ol-feature>
       </ol-source-vector>
     </ol-vector-layer>
@@ -197,8 +168,4 @@ const contextMenuItems = ref<unknown[]>([
     }
   }
 ])
-
-const selectConditions = inject('ol-selectconditions')
-const selectCondition = selectConditions.singleClick
-const selectExistedCoords = selectConditions.always
 </script>

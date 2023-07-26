@@ -5,41 +5,40 @@
   </div>
   <div>
     <button
-      :disabled="valueStore.settingNodes.edit"
-      v-show="valueStore.settingNodes.start"
+      :disabled="!valueStore.settingNodes.start"
       @click="startClick()"
       :class="
-        !valueStore.settingNodes.edit
-          ? 'border-black border-2 bg-green-300'
-          : 'border-black border-2 bg-stone-300'
+        valueStore.settingNodes.start
+          ? 'bg-green-300 border-2 border-green-300 m-1'
+          : ' bg-stone-300 border-2 border-stone-300 m-1'
       "
     >
       START
     </button>
-    <button
-      v-show="valueStore.settingNodes.start"
-      @click="resetClick()"
-      class="'border-black border-2 bg-red-300"
-    >
-      RESET
-    </button>
+    <button @click="resetClick()" class="bg-red-300 border-2 border-red-300 m-1">RESET</button>
   </div>
   <div>Hop counter:</div>
   <div>Delivered:</div>
-  <div v-show="valueStore.settingNodes.setRangeVisible && valueStore.settingNodes.edit">
+
+  <div
+    v-for="gw of valueStore.gw.allGWs"
+    :key="gw.id"
+    v-show="valueStore.gw.data?.id === gw.id && valueStore.settingNodes.edit"
+    class="bg-cyan-800 text-cyan-100 border-4 border-cyan-800 m-1"
+  >
     Set new range:
-    <input
-      class="border-black border-2 text-black"
-      v-model.number="valueStore.settingNodes.rangeInput"
-      placeholder="range"
-      @keyup.enter="
-        ;[
-          valueStore.selectTable(valueStore.settingNodes.setRange),
-          (valueStore.settingNodes.start = true),
-          (valueStore.settingNodes.rangeInput = 100)
-        ]
-      "
-    />
+    <input class="border-black border-2 text-black m-1" v-model.number="gw.range" />
+    <input class="m-1" type="range" v-model.number="gw.range" min="0" max="20000" />
+  </div>
+  <div
+    v-for="sensor of valueStore.sensor.allSensors"
+    :key="sensor.id"
+    v-show="valueStore.sensor.data?.id === sensor.id && valueStore.settingNodes.edit"
+    class="bg-cyan-800 text-cyan-100 border-4 border-cyan-800 m-1"
+  >
+    Set new range:
+    <input class="border-black border-2 text-black m-1" v-model.number="sensor.range" />
+    <input class="m-1" type="range" v-model.number="sensor.range" min="0" max="20000" />
   </div>
 </template>
 <script setup lang="ts">

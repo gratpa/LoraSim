@@ -44,19 +44,6 @@ interface Iprojection {
   extent: number[]
 }
 
-interface Ievent {
-  selected: {
-    0: {
-      values_: {
-        geometry: {
-          flatCoordinates: number[]
-        }
-      }
-    }
-  }
-  target: { getFeatures(): number[] }
-}
-
 interface IAllPaths {
   fc: number[]
   sc: number[]
@@ -71,16 +58,10 @@ interface IAllCoords {
 }
 interface IsettingNodes {
   selectedCoords: number[]
-  selectedTable: number[]
-  selectedFeatures: unknown
-  changedCoords: number[]
-  changedRange: number
-  rangeInput: number
+
   edit: boolean
   start: boolean
   iconVisible: boolean
-  setRange: number
-  setRangeVisible: boolean
 }
 
 interface IcalculatePaths {
@@ -97,7 +78,6 @@ export type {
   ImapSetting,
   Iprojection,
   IAllPaths,
-  Ievent,
   IAllCoords,
   IcalculatePaths,
   IsettingNodes

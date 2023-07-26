@@ -1,35 +1,24 @@
 <template>
   <div>Sensors:</div>
-  <div
-    v-for="sensor of valueStore.sensor.allSensors"
-    :key="sensor.id"
-    @click="
-      ;[
-        valueStore.selectTable(sensor.id),
-        (valueStore.settingNodes.edit = false),
-        (valueStore.settingNodes.selectedCoords = sensor.coords),
-        valueStore.setPoint(),
-        (valueStore.settingNodes.setRangeVisible = true)
-      ]
-    "
-  >
+  <div class="grid grid-cols-2">
     <div
       :class="[
         valueStore.sensor.data?.id === sensor.id && valueStore.settingNodes.edit
-          ? 'bg-cyan-800 text-cyan-100'
-          : 'bg-cyan-800/20'
+          ? 'bg-cyan-800 text-cyan-100 border-2 border-cyan-800 m-1 '
+          : 'bg-cyan-800/20 border-2 border-cyan-800 m-1'
       ]"
+      v-for="sensor of valueStore.sensor.allSensors"
+      :key="sensor.id"
+      @click="
+        ;[
+          (valueStore.settingNodes.edit = false),
+          (valueStore.settingNodes.selectedCoords = sensor.coords),
+          valueStore.setPoint()
+        ]
+      "
     >
-      Id {{ sensor.id }}
-    </div>
-    <div
-      :class="[
-        valueStore.sensor.data?.id === sensor.id && valueStore.settingNodes.edit
-          ? 'bg-cyan-800  text-cyan-100'
-          : 'bg-cyan-800/20'
-      ]"
-    >
-      range: {{ Math.ceil(sensor.range) }}
+      <div class="mx-1">Id {{ sensor.id }}</div>
+      <div class="mx-1">range: {{ Math.ceil(sensor.range) }}</div>
     </div>
   </div>
 </template>

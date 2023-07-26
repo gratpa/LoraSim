@@ -1,10 +1,9 @@
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import type { Isensor } from '@/interface'
 import type { Igw } from '@/interface'
 import { GW } from '@/models/classes'
 import { Sensor } from '@/models/classes'
-import type { Ievent } from '@/interface'
 import { AllPaths } from '@/models/classes'
 
 import type { IsettingNodes } from '@/interface'
@@ -29,16 +28,9 @@ export const useValueStore = defineStore('valueStore', () => {
 
   const settingNodes = ref<IsettingNodes>({
     selectedCoords: [],
-    selectedTable: [],
-    selectedFeatures: 0,
-    changedCoords: [],
-    changedRange: 0,
-    rangeInput: 100,
     edit: false,
     start: false,
-    iconVisible: false,
-    setRange: 0,
-    setRangeVisible: false
+    iconVisible: false
   })
 
   const calculatePaths = ref<IcalculatePaths>({
@@ -128,80 +120,15 @@ export const useValueStore = defineStore('valueStore', () => {
     settingNodes.value.iconVisible = false
   }
 
-  const select = (event: Ievent) => {
-    settingNodes.value.selectedFeatures = event.target.getFeatures()
-    settingNodes.value.changedCoords = event.selected[0].values_.geometry.flatCoordinates
-    setPoint()
-  }
-  const selectTable = (id: number) => {
-    sensor.value.allSensors.forEach(
-      (sensor) =>
-        sensor.id === id ? (sensor.range = settingNodes.value.rangeInput) : sensor.range,
-      (settingNodes.value.setRange = id)
-    )
-    gw.value.allGWs.forEach(
-      (gw) => (gw.id === id ? (gw.range = settingNodes.value.rangeInput) : gw.range),
-      (settingNodes.value.setRange = id)
-    )
-  }
-
-  const checkExistedCoords = (event: Ievent) => {
-    const newCoords = event.selected[0].values_.geometry.flatCoordinates
-
-    const existedSensors = sensor.value.allSensors.find(
-      (element) => element.coords[0] === newCoords[0] && element.coords[1] === newCoords[1]
-    )
-    const existedGWs = gw.value.allGWs.find(
-      (element) => element.coords[0] === newCoords[0] && element.coords[1] === newCoords[1]
-    )
-    sensor.value.allSensors.forEach((element) => console.log(element.coords[0], element.coords[1]))
-    if (existedGWs) {
-      console.log('ok')
-    } else if (existedSensors) {
-      console.log('ok')
-    } else {
-      alert("You can't move the range!")
-      reset()
-    }
-  }
-  const updateRange = computed(
-    () =>
-      (settingNodes.value.changedRange = Math.hypot(
-        settingNodes.value.changedCoords[0] - settingNodes.value.changedCoords[2],
-        settingNodes.value.changedCoords[1] - settingNodes.value.changedCoords[3]
-      ))
-  )
-
-  const setNewRange = () => {
-    gw.value.allGWs.forEach((element) =>
-      element.coords[0] === settingNodes.value.changedCoords[0] &&
-      element.coords[1] === settingNodes.value.changedCoords[1]
-        ? (element.range = updateRange.value)
-        : element.range
-    )
-    sensor.value.allSensors.forEach((element) =>
-      element.coords[0] === settingNodes.value.changedCoords[0] &&
-      element.coords[1] === settingNodes.value.changedCoords[1]
-        ? (element.range = updateRange.value)
-        : element.range
-    )
-    settingNodes.value.edit = false
-  }
-
   return {
     sensor,
     gw,
     settingNodes,
-    updateRange,
     calculatePaths,
     setNewSensor,
     setNewGW,
     setPoint,
     findPath,
-    reset,
-    select,
-    setNewRange,
-    checkExistedCoords,
-    selectTable
+    reset
   }
 })
