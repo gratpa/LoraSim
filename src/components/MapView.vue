@@ -100,22 +100,49 @@
         </ol-source-vector>
       </ol-vector-layer>
     </div>
-
-    <ol-vector-layer>
-      <ol-source-vector>
-        <ol-feature v-for="path of valueStore.calculatePaths.paths" :key="path.d">
-          <ol-geom-line-string :coordinates="[path.fc, path.sc]"></ol-geom-line-string>
-          <ol-style-flowline color="blue" :width="2" :arrow="1" />
-        </ol-feature>
-      </ol-source-vector>
-    </ol-vector-layer>
+    <div v-for="msg of logicStore.allMsgs" :key="msg.msgID">
+      <div v-if="logicStore.chosenMsg?.msgID === msg.msgID && logicStore.showPaths">
+        <ol-vector-layer>
+          <ol-source-vector :updateWhileInteracting="true">
+            <ol-feature v-for="paths of msg.pathsMsg" :key="paths.firstID">
+              <ol-geom-line-string
+                :coordinates="[paths.firstCoords, paths.secCoords]"
+              ></ol-geom-line-string>
+              <ol-style-flowline color="blue" :width="3" :arrow="1" />
+            </ol-feature>
+            <!-- <ol-feature v-for="paths of msg.pathsResp" :key="paths.fc">
+              <ol-geom-line-string :coordinates="[paths.fc, paths.sc]"></ol-geom-line-string>
+              <ol-style-flowline
+                color="rgb(0,250,154,1)"
+                color2="rgb(46,139,87,1)"
+                :width="2"
+                :arrow="1"
+              />
+            </ol-feature> -->
+            <ol-feature v-for="paths of msg.duplicateMsg" :key="paths.firstID">
+              <ol-geom-line-string
+                :coordinates="[paths.firstCoords, paths.secCoords]"
+              ></ol-geom-line-string>
+              <ol-style-flowline color="red" :width="2" :arrow="1" />
+            </ol-feature>
+            <ol-feature v-for="paths of msg.serverMsg" :key="paths.firstID">
+              <ol-geom-line-string
+                :coordinates="[paths.firstCoords, paths.secCoords]"
+              ></ol-geom-line-string>
+              <ol-style-flowline color="green" :width="2" :arrow="1" />
+            </ol-feature>
+          </ol-source-vector>
+        </ol-vector-layer>
+      </div>
+    </div>
   </ol-map>
 </template>
 
 <script setup lang="ts">
 import { useValueStore } from '@/stores/valueStore'
 const valueStore = useValueStore()
-
+import { useStoreLogic } from '@/logic/storeLogic'
+const logicStore = useStoreLogic()
 import { ref, inject } from 'vue'
 
 import gateway from '@/assets/gateway.png'
@@ -169,3 +196,4 @@ const contextMenuItems = ref<unknown[]>([
   }
 ])
 </script>
+@/logic/storeLogic

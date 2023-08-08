@@ -44,29 +44,15 @@ interface Iprojection {
   extent: number[]
 }
 
-interface IAllPaths {
-  fc: number[]
-  sc: number[]
-  d: number
-  r: number
-}
-
 interface IAllCoords {
   sensor: number[][]
   gw: number[][]
   sensorRange: number
 }
 interface IsettingNodes {
-  selectedCoords: number[]
-
   edit: boolean
   start: boolean
   iconVisible: boolean
-}
-
-interface IcalculatePaths {
-  paths: IAllPaths[]
-  allPaths: IAllPaths[]
 }
 
 export type {
@@ -77,8 +63,6 @@ export type {
   Igw,
   ImapSetting,
   Iprojection,
-  IAllPaths,
   IAllCoords,
-  IcalculatePaths,
   IsettingNodes
 }

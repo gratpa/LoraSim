@@ -9,13 +9,7 @@
       ]"
       v-for="gw of valueStore.gw.allGWs"
       :key="gw.id"
-      @click="
-        ;[
-          (valueStore.settingNodes.edit = false),
-          (valueStore.settingNodes.selectedCoords = gw.coords),
-          valueStore.setPoint()
-        ]
-      "
+      @click=";[(valueStore.settingNodes.edit = false), valueStore.setPoint(gw.id)]"
     >
       <div class="mx-1">Id {{ gw.id }}</div>
       <div class="mx-1">

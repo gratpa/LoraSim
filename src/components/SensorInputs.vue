@@ -9,20 +9,20 @@
       ]"
       v-for="sensor of valueStore.sensor.allSensors"
       :key="sensor.id"
-      @click="
-        ;[
-          (valueStore.settingNodes.edit = false),
-          (valueStore.settingNodes.selectedCoords = sensor.coords),
-          valueStore.setPoint()
-        ]
-      "
+      @click=";[(valueStore.settingNodes.edit = false), valueStore.setPoint(sensor.id)]"
     >
-      <div class="mx-1">Id {{ sensor.id }}</div>
-      <div class="mx-1">range: {{ Math.ceil(sensor.range) }}</div>
+      <div :class="logicStore.chosenMsg?.sensorID === sensor.id ? ' font-bold mx-1 ' : ' mx-1'">
+        Id {{ sensor.id }}
+      </div>
+      <div :class="logicStore.chosenMsg?.sensorID === sensor.id ? ' font-bold mx-1 ' : ' mx-1'">
+        range: {{ Math.ceil(sensor.range) }}
+      </div>
     </div>
   </div>
 </template>
 <script setup lang="ts">
 import { useValueStore } from '@/stores/valueStore'
 const valueStore = useValueStore()
+import { useStoreLogic } from '@/logic/storeLogic'
+const logicStore = useStoreLogic()
 </script>
