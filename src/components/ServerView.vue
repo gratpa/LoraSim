@@ -10,7 +10,6 @@
         <div>Msg: {{ msg.msgID }}</div>
         <div>Sensor: {{ msg.sensorID }}</div>
         <div>Status: {{ msg.status }}</div>
-        <div>{{ msg.retrayCounter }}</div>
       </div>
     </div>
   </div>

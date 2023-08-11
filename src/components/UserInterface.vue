@@ -49,7 +49,8 @@
       RESET
     </button>
     <div>Set time:</div>
-    <input class="border-black border-2 text-black m-1 w-10" v-model.number="logicStore.time" />
+    <input class="border-black border-2 text-black m-1 w-10" v-model.number="logicStore.timeSet" />
+
     <div>Set max retry counter:</div>
     <input
       class="border-black border-2 text-black m-1 w-10"
@@ -57,6 +58,9 @@
     />
   </div>
   <div>{{ logicStore.msgStatus }}</div>
+  <div v-for="retryMsg of logicStore.retryMsg" :key="retryMsg.retry">
+    From:{{ retryMsg.firstID }} To: {{ retryMsg.secID }} Retry: {{ retryMsg.retry }}
+  </div>
 </template>
 <script setup lang="ts">
 import { useValueStore } from '@/stores/valueStore'

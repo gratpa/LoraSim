@@ -92,9 +92,14 @@
         <ol-source-vector>
           <ol-feature>
             <ol-geom-circle :center="gw.coords" :radius="gw.range"></ol-geom-circle>
-            <ol-style>
+
+            <ol-style v-if="gw.hasCoverage">
               <ol-style-stroke color="rgb(0,139,139)" :width="3"></ol-style-stroke>
-              <ol-style-fill color="rgb(255,215,0,0.1)"></ol-style-fill>
+              <ol-style-fill color="rgb(60, 179, 113, 0.1) "></ol-style-fill>
+            </ol-style>
+            <ol-style v-else-if="!gw.hasCoverage">
+              <ol-style-stroke color="rgb(0,139,139)" :width="3"></ol-style-stroke>
+              <ol-style-fill color=" rgb(205,92,92, 0.1)"></ol-style-fill>
             </ol-style>
           </ol-feature>
         </ol-source-vector>
@@ -108,7 +113,7 @@
               <ol-geom-line-string
                 :coordinates="[paths.firstCoords, paths.secCoords]"
               ></ol-geom-line-string>
-              <ol-style-flowline color="blue" :width="3" :arrow="1" />
+              <ol-style-flowline color="rgb(100,149,237)" :width="3" :arrow="1" />
             </ol-feature>
             <!-- <ol-feature v-for="paths of msg.pathsResp" :key="paths.fc">
               <ol-geom-line-string :coordinates="[paths.fc, paths.sc]"></ol-geom-line-string>
@@ -119,17 +124,12 @@
                 :arrow="1"
               />
             </ol-feature> -->
-            <ol-feature v-for="paths of msg.duplicateMsg" :key="paths.firstID">
-              <ol-geom-line-string
-                :coordinates="[paths.firstCoords, paths.secCoords]"
-              ></ol-geom-line-string>
-              <ol-style-flowline color="red" :width="2" :arrow="1" />
-            </ol-feature>
+
             <ol-feature v-for="paths of msg.serverMsg" :key="paths.firstID">
               <ol-geom-line-string
                 :coordinates="[paths.firstCoords, paths.secCoords]"
               ></ol-geom-line-string>
-              <ol-style-flowline color="green" :width="2" :arrow="1" />
+              <ol-style-flowline color="rgba(102,205,170,0.3)" :width="10" />
             </ol-feature>
           </ol-source-vector>
         </ol-vector-layer>
