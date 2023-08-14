@@ -29,10 +29,6 @@
     <input class="border-black border-2 text-black m-1" v-model.number="sensor.range" />
     <input class="m-1" type="range" v-model.number="sensor.range" min="0" max="20000" />
 
-    <div>
-      <textarea class="border-black border-2" :value="input"></textarea>
-    </div>
-
     <button
       @click="logicStore.buildMsg(sensor.id, valueStore.sensor.allSensors, valueStore.gw.allGWs)"
       class="bg-green-300 border-2 border-green-300 m-1 text-black"
@@ -50,14 +46,18 @@
     </button>
     <div>Set time:</div>
     <input class="border-black border-2 text-black m-1 w-10" v-model.number="logicStore.timeSet" />
-
+    <div>Set max hop counter:</div>
+    <input
+      class="border-black border-2 text-black m-1 w-10"
+      v-model.number="logicStore.hopCntMax"
+    />
     <div>Set max retry counter:</div>
     <input
       class="border-black border-2 text-black m-1 w-10"
       v-model.number="logicStore.retryCntMax"
     />
   </div>
-  <div>{{ logicStore.msgStatus }}</div>
+  <div>{{ logicStore.server }}</div>
   <div v-for="retryMsg of logicStore.retryMsg" :key="retryMsg.retry">
     From:{{ retryMsg.firstID }} To: {{ retryMsg.secID }} Retry: {{ retryMsg.retry }}
   </div>
@@ -68,5 +68,4 @@ const valueStore = useValueStore()
 import { useStoreLogic } from '@/logic/storeLogic'
 
 const logicStore = useStoreLogic()
-const input = ''
 </script>
