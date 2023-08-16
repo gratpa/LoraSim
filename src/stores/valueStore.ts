@@ -35,7 +35,6 @@ export const useValueStore = defineStore('valueStore', () => {
     const newSensor = new Sensor(coords, sensor.value.id, sensor.value.range)
     sensor.value.allSensors.push(newSensor)
     settingNodes.value.start = true
-    console.log(sensor.value.allSensors)
   }
   const setNewGW = (coords: number[]) => {
     const newGW = new GW(coords, gw.value.id, gw.value.range, gw.value.hasCoverage)

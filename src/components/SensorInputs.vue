@@ -17,6 +17,14 @@
       <div :class="logicStore.chosenMsg?.sensorID === sensor.id ? ' font-bold mx-1 ' : ' mx-1'">
         range: {{ Math.ceil(sensor.range) }}
       </div>
+      <div v-for="status of logicStore.msgStatus" :key="status.msgID">
+        <div
+          v-if="status.nodeID === sensor.id"
+          :class="logicStore.chosenMsg?.sensorID === sensor.id ? ' font-bold mx-1 ' : ' mx-1'"
+        >
+          status: {{ status.msgStatus }}
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -24,5 +32,6 @@
 import { useValueStore } from '@/stores/valueStore'
 const valueStore = useValueStore()
 import { useStoreLogic } from '@/logic/storeLogic'
+
 const logicStore = useStoreLogic()
 </script>

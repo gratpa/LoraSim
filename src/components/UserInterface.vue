@@ -57,9 +57,9 @@
       v-model.number="logicStore.retryCntMax"
     />
   </div>
-  <div>{{ logicStore.server }}</div>
+
   <div v-for="retryMsg of logicStore.retryMsg" :key="retryMsg.retry">
-    From:{{ retryMsg.firstID }} To: {{ retryMsg.secID }} Retry: {{ retryMsg.retry }}
+    From: {{ retryMsg.firstID }} To: {{ retryMsg.secID }} Retry: {{ retryMsg.retry }}
   </div>
 </template>
 <script setup lang="ts">

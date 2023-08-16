@@ -1,6 +1,6 @@
 <template>
   <div>Server:</div>
-  <div class="grid grid-cols-2">
+  <div class="grid grid-cols-1">
     <div v-for="msg of logicStore.allMsgs" :key="msg.msgID">
       <div
         v-if="msg.status === 'server'"
@@ -10,6 +10,13 @@
         <div>Msg: {{ msg.msgID }}</div>
         <div>Sensor: {{ msg.sensorID }}</div>
         <div>Status: {{ msg.status }}</div>
+        <div v-for="status of logicStore.server" :key="status.msgID">
+          <div v-if="status.msgID === msg.msgID">
+            <div v-for="(hop, indx) of status.hopCnt" :key="hop">
+              {{ indx + 1 }} ✉️ Hops: {{ hop }}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

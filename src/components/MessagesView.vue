@@ -18,6 +18,7 @@
         <div>Msg: {{ msg.msgID }}</div>
         <div>Sensor: {{ msg.sensorID }}</div>
         <div>Status: {{ msg.status }}</div>
+
         <!-- <div v-for="paths of msg.pathsMsg" :key="paths.dist">hop cnt: {{ paths.hopCnt }}</div> -->
 
         <button

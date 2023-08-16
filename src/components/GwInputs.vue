@@ -18,10 +18,20 @@
         <label for="checkbox"></label>
       </div>
       <div class="mx-1">range: {{ Math.ceil(gw.range) }}</div>
+      <div v-for="status of logicStore.msgStatus" :key="status.msgID">
+        <div
+          v-if="status.nodeID === gw.id"
+          :class="logicStore.chosenMsg?.sensorID === gw.id ? ' font-bold mx-1 ' : ' mx-1'"
+        >
+          status: {{ status.msgStatus }}
+        </div>
+      </div>
     </div>
   </div>
 </template>
 <script setup lang="ts">
 import { useValueStore } from '@/stores/valueStore'
 const valueStore = useValueStore()
+import { useStoreLogic } from '@/logic/storeLogic'
+const logicStore = useStoreLogic()
 </script>
