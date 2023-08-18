@@ -45,20 +45,23 @@
       RESET
     </button>
     <div>Set time:</div>
-    <input class="border-black border-2 text-black m-1 w-10" v-model.number="logicStore.timeSet" />
+    <input
+      class="border-black border-2 text-black m-1 w-10"
+      v-model.number="logicStore.userSetting.timeSet"
+    />
     <div>Set max hop counter:</div>
     <input
       class="border-black border-2 text-black m-1 w-10"
-      v-model.number="logicStore.hopCntMax"
+      v-model.number="logicStore.userSetting.hopCntMax"
     />
     <div>Set max retry counter:</div>
     <input
       class="border-black border-2 text-black m-1 w-10"
-      v-model.number="logicStore.retryCntMax"
+      v-model.number="logicStore.userSetting.retryCntMax"
     />
   </div>
 
-  <div v-for="retryMsg of logicStore.retryMsg" :key="retryMsg.retry">
+  <div v-for="retryMsg of logicStore.msg.retryMsg" :key="retryMsg.retry">
     From: {{ retryMsg.firstID }} To: {{ retryMsg.secID }} Retry: {{ retryMsg.retry }}
   </div>
 </template>

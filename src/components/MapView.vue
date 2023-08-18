@@ -105,8 +105,8 @@
         </ol-source-vector>
       </ol-vector-layer>
     </div>
-    <div v-for="msg of logicStore.allMsgs" :key="msg.msgID">
-      <div v-if="logicStore.chosenMsg?.msgID === msg.msgID && logicStore.showPaths">
+    <div v-for="msg of logicStore.msg.allMsgs" :key="msg.msgID">
+      <div v-if="logicStore.chosenMsg?.msgID === msg.msgID && logicStore.paths.showPaths">
         <ol-vector-layer>
           <ol-source-vector :updateWhileInteracting="true">
             <ol-feature v-for="paths of msg.pathsMsg" :key="paths.firstID">

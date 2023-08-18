@@ -17,7 +17,7 @@
       <div :class="logicStore.chosenMsg?.sensorID === sensor.id ? ' font-bold mx-1 ' : ' mx-1'">
         range: {{ Math.ceil(sensor.range) }}
       </div>
-      <div v-for="status of logicStore.msgStatus" :key="status.msgID">
+      <div v-for="status of logicStore.msg.msgStatus" :key="status.msgID">
         <div
           v-if="status.nodeID === sensor.id"
           :class="logicStore.chosenMsg?.sensorID === sensor.id ? ' font-bold mx-1 ' : ' mx-1'"

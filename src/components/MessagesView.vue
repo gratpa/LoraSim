@@ -1,16 +1,16 @@
 <template>
   <div>Messages:</div>
   <div class="grid grid-cols-2">
-    <div v-for="msg of logicStore.allMsgs" :key="msg.msgID">
+    <div v-for="msg of logicStore.msg.allMsgs" :key="msg.msgID">
       <div
         v-if="msg.status !== 'server'"
         :class="[
-          logicStore.chosenMsg?.msgID === msg.msgID && logicStore.showPaths
+          logicStore.chosenMsg?.msgID === msg.msgID && logicStore.paths.showPaths
             ? msg.status === 'delivered'
               ? ' bg-emerald-300 m-1 font-bold'
               : 'bg-yellow-300 m-1 font-bold'
-            : msg.status === 'delivered'
-            ? ' bg-emerald-300 m-1 '
+            : msg.status === 'fail'
+            ? ' bg-red-300 m-1 '
             : 'bg-yellow-300 m-1'
         ]"
         @click=";[logicStore.setPaths(msg.msgID), valueStore.setPoint(msg.sensorID)]"
@@ -18,8 +18,6 @@
         <div>Msg: {{ msg.msgID }}</div>
         <div>Sensor: {{ msg.sensorID }}</div>
         <div>Status: {{ msg.status }}</div>
-
-        <!-- <div v-for="paths of msg.pathsMsg" :key="paths.dist">hop cnt: {{ paths.hopCnt }}</div> -->
 
         <button
           @click="
