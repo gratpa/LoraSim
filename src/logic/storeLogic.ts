@@ -452,7 +452,7 @@ export const useStoreLogic = defineStore('storeLogic', () => {
         hopcnt.msgID === msgID
       ) {
         if (returnPath) {
-          hopcnt.hopCnt++
+          hopcnt.hopCnt = hopcnt.hopCnt + 1
         }
       } else if (
         path.firstID !== hopcnt.firstID &&
@@ -479,9 +479,10 @@ export const useStoreLogic = defineStore('storeLogic', () => {
       ) {
         hopcnt.firstID = path.firstID
         hopcnt.secID = path.secID
-        hopcnt.hopCnt = hopcnt.hopCnt++
+        hopcnt.hopCnt = hopcnt.hopCnt + 1
       }
     })
+    console.log(hopCnt.value.allHopCnt)
   }
 
   const setServerStatus = (msgID: number, pathsMsg: IAllPaths[]) => {
@@ -525,6 +526,7 @@ export const useStoreLogic = defineStore('storeLogic', () => {
           }
         })
         const tempHop = [...new Set(hopCnt.value.tempHops)]
+        console.log(tempHop)
         tempHop.length > 0 ? tempHop : (tempHop.length = 1)
         if (msg.value.server.length === 0) {
           msg.value.server.push(
