@@ -27,7 +27,8 @@
             class="col-start-1 col-end-2 row-start-3 row-end-3 ml-2"
           >
             <div v-if="status.msgID === msg.msgID">
-              {{ status.msgCnt }} ✉️ Hops: {{ status.hopCnt }} GW: {{ status.secID }}
+              {{ status.msgCnt }} ✉️ Hops: {{ status.hopCnt }}
+              <div>GW: {{ status.secID }}</div>
             </div>
           </div>
         </div>

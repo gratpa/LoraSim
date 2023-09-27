@@ -163,7 +163,7 @@ const contextMenuItems = ref<unknown[]>([
       valueStore.sensor.id = 1000 + valueStore.sensor.coord.length
 
       const feature = new Feature({
-        geometry: new Geom.Point(val.coordinate)
+        geometry: new Geom.Point!(val.coordinate)
       })
       sensors.value.source.addFeature(feature)
     }
@@ -179,11 +179,11 @@ const contextMenuItems = ref<unknown[]>([
       valueStore.gw.id = 2000 + valueStore.gw.coord.length
 
       const feature = new Feature({
-        geometry: new Geom.Point(val.coordinate)
+        geometry: new Geom.Point!(val.coordinate)
       })
       gateways.value.source.addFeature(feature)
+      console.log(feature.getProperties)
     }
   }
 ])
 </script>
-@/logic/storeLogic
