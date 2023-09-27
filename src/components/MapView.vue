@@ -29,8 +29,8 @@
         <div
           :class="
             valueStore.sensor.data?.id === sensor.id && valueStore.settingNodes.edit
-              ? 'bg-cyan-100 text-cyan-950 border-cyan-950 border-2'
-              : 'bg-cyan-950/80 text-cyan-100'
+              ? 'bg-blue-200 text-blue-500 border-blue-500 border-2'
+              : 'bg-blue-500/75 text-blue-200'
           "
         >
           ID: {{ sensor.id }}
@@ -42,8 +42,8 @@
         <div
           :class="
             valueStore.gw.data?.id === gw.id && valueStore.settingNodes.edit
-              ? 'bg-cyan-100 text-cyan-950 border-cyan-950 border-2'
-              : 'bg-cyan-950/80 text-cyan-100'
+              ? 'bg-blue-200 text-blue-500 border-blue-500 border-2'
+              : 'bg-blue-500/75 text-blue-200'
           "
         >
           ID: {{ gw.id }}
@@ -80,7 +80,7 @@
               :updateWhileInteracting="true"
             ></ol-geom-circle>
             <ol-style>
-              <ol-style-stroke color="rgb(0,139,139)" :width="3"></ol-style-stroke>
+              <ol-style-stroke color="rgb(115,187,255)" :width="3"></ol-style-stroke>
               <ol-style-fill color="rgb(255,215,0,0.1)"></ol-style-fill>
             </ol-style>
           </ol-feature>
@@ -94,11 +94,11 @@
             <ol-geom-circle :center="gw.coords" :radius="gw.range"></ol-geom-circle>
 
             <ol-style v-if="gw.hasCoverage">
-              <ol-style-stroke color="rgb(0,139,139)" :width="3"></ol-style-stroke>
+              <ol-style-stroke color="rgb(115,187,255)" :width="3"></ol-style-stroke>
               <ol-style-fill color="rgb(60, 179, 113, 0.1) "></ol-style-fill>
             </ol-style>
             <ol-style v-else-if="!gw.hasCoverage">
-              <ol-style-stroke color="rgb(0,139,139)" :width="3"></ol-style-stroke>
+              <ol-style-stroke color="rgb(115,187,255)" :width="3"></ol-style-stroke>
               <ol-style-fill color=" rgb(205,92,92, 0.1)"></ol-style-fill>
             </ol-style>
           </ol-feature>
@@ -115,16 +115,6 @@
               ></ol-geom-line-string>
               <ol-style-flowline color="rgb(100,149,237)" :width="3" :arrow="1" />
             </ol-feature>
-            <!-- <ol-feature v-for="paths of msg.pathsResp" :key="paths.fc">
-              <ol-geom-line-string :coordinates="[paths.fc, paths.sc]"></ol-geom-line-string>
-              <ol-style-flowline
-                color="rgb(0,250,154,1)"
-                color2="rgb(46,139,87,1)"
-                :width="2"
-                :arrow="1"
-              />
-            </ol-feature> -->
-
             <ol-feature v-for="paths of msg.serverMsg" :key="paths.firstID">
               <ol-geom-line-string
                 :coordinates="[paths.firstCoords, paths.secCoords]"

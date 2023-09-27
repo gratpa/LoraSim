@@ -4,7 +4,6 @@ import {
   type IAllPaths,
   type IMsgBuilder,
   type IServer,
-  type IuserSetting,
   type IhopCnt,
   type Imsg,
   type Ipaths
@@ -13,11 +12,6 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
 export const useStoreLogic = defineStore('storeLogic', () => {
-  const userSetting = ref(<IuserSetting>{
-    timeSet: 3,
-    hopCntMax: 3,
-    retryCntMax: 3
-  })
   const hopCnt = ref<IhopCnt>({
     allHopCnt: [],
     servHopCnt: [],
@@ -99,16 +93,18 @@ export const useStoreLogic = defineStore('storeLogic', () => {
         hopCnt.value.currentHop = allhops.hopCnt
       } else hopCnt.value.currentHop = 0
     })
-
+    console.log(msg.value.allMsgs)
     findPath(sensorID, allSensors, allGWs, msgID)
-
+    msg.value.allMsgs
     const sensor: ISensor = allSensors.find((element) => element.id === sensorID)!
     const firstPath = paths.value.filterPathsMsg.filter((msg) => msg.firstID === sensor.id)
-
     firstPath.forEach((element) => {
       hopCnt.value.currentHop ? hopCnt.value.currentHop : (hopCnt.value.currentHop = 0)
+      const thisMsg = msg.value.allMsgs.find(
+        (msg) => msg.msgID === msgID && msg.sensorID === sensorID
+      )
 
-      if (hopCnt.value.currentHop > userSetting.value.hopCntMax) {
+      if (hopCnt.value.currentHop > thisMsg!.hopCntMax) {
         const firstStatusNode = msg.value.msgStatus.find(
           (msg) => msg.nodeID === element.firstID && msg.msgID === msgID
         )
@@ -121,7 +117,7 @@ export const useStoreLogic = defineStore('storeLogic', () => {
         if (msgIn) {
           changeStatus('msgDead', msgIn.nodeID, msgID)
         }
-      } else if (hopCnt.value.currentHop < userSetting.value.hopCntMax) {
+      } else if (hopCnt.value.currentHop < thisMsg!.hopCntMax) {
         if (element.dist <= element.firstR && element.dist <= element.secR) {
           setHopCnt(element, msgID)
           changeStatus('msgOut', element.firstID, msgID)
@@ -203,8 +199,10 @@ export const useStoreLogic = defineStore('storeLogic', () => {
           }
         })
         hopCnt.value.currentHop ? hopCnt.value.currentHop : (hopCnt.value.currentHop = 0)
-
-        if (hopCnt.value.currentHop > userSetting.value.hopCntMax) {
+        const thisMsg = msg.value.allMsgs.find(
+          (msg) => msg.msgID === msgID && msg.sensorID === sensorID
+        )
+        if (hopCnt.value.currentHop > thisMsg!.hopCntMax) {
           const firstStatusNode = msg.value.msgStatus.find(
             (msg) => msg.nodeID === element.firstID && msg.msgID === msgID
           )
@@ -212,7 +210,7 @@ export const useStoreLogic = defineStore('storeLogic', () => {
           if (firstStatusNode?.msgStatus !== 'msgOut') {
             changeStatus('msgDead', element.firstID, msgID)
           }
-        } else if (hopCnt.value.currentHop <= userSetting.value.hopCntMax) {
+        } else if (hopCnt.value.currentHop <= thisMsg!.hopCntMax) {
           if (element.dist <= element.firstR && element.dist <= element.secR) {
             setHopCnt(element, msgID)
             changeStatus('msgOut', element.firstID, msgID)
@@ -303,8 +301,10 @@ export const useStoreLogic = defineStore('storeLogic', () => {
         }
       })
       hopCnt.value.currentHop ? hopCnt.value.currentHop : (hopCnt.value.currentHop = 0)
-
-      if (hopCnt.value.currentHop > userSetting.value.hopCntMax) {
+      const thisMsg = msg.value.allMsgs.find(
+        (msg) => msg.msgID === msgID && msg.sensorID === sensorID
+      )
+      if (hopCnt.value.currentHop > thisMsg!.hopCntMax) {
         const firstStatusNode = msg.value.msgStatus.find(
           (msg) => msg.nodeID === path.firstID && msg.msgID === msgID
         )
@@ -312,7 +312,7 @@ export const useStoreLogic = defineStore('storeLogic', () => {
         if (firstStatusNode?.msgStatus !== 'msgOut') {
           changeStatus('msgDead', path.firstID, msgID)
         }
-      } else if (hopCnt.value.currentHop <= userSetting.value.hopCntMax) {
+      } else if (hopCnt.value.currentHop <= thisMsg!.hopCntMax) {
         if (path.dist <= path.firstR && path.dist <= path.secR) {
           setHopCnt(path, msgID)
           changeStatus('msgOut', path.firstID, msgID)
@@ -393,7 +393,10 @@ export const useStoreLogic = defineStore('storeLogic', () => {
     })
 
     hopCnt.value.currentHop ? hopCnt.value.currentHop : (hopCnt.value.currentHop = 0)
-    if (hopCnt.value.currentHop <= userSetting.value.hopCntMax) {
+    const thisMsg = msg.value.allMsgs.find(
+      (msg) => msg.msgID === msgID && msg.sensorID === sensorID
+    )
+    if (hopCnt.value.currentHop <= thisMsg!.hopCntMax) {
       setTimeout(() => {
         if (path.secCov) {
           pathsMsg.push(path)
@@ -460,8 +463,10 @@ export const useStoreLogic = defineStore('storeLogic', () => {
       }
     })
     hopCnt.value.currentHop ? hopCnt.value.currentHop : (hopCnt.value.currentHop = 0)
-
-    if (hopCnt.value.currentHop <= userSetting.value.hopCntMax) {
+    const thisMsg = msg.value.allMsgs.find(
+      (msg) => msg.msgID === msgID && msg.sensorID === sensorID
+    )
+    if (hopCnt.value.currentHop <= thisMsg!.hopCntMax) {
       const firstStatusNode = msg.value.msgStatus.find((msg) => msg.nodeID === path.firstID)
 
       if (firstStatusNode?.msgStatus === 'msgOut') {
@@ -490,7 +495,7 @@ export const useStoreLogic = defineStore('storeLogic', () => {
         )
 
         setTimeout(() => {
-          if (msg.value.retryMsg[index_retry].retry < userSetting.value.retryCntMax) {
+          if (msg.value.retryMsg[index_retry].retry < thisMsg!.retryCntMax) {
             msg.value.retryMsg[index_retry].retry++
             findNodeAgain(path, msgID, sensorID, allSensors, allGWs, serverMsg, pathsMsg)
             findFirstNode(sensorID, allSensors, allGWs, msgID, serverMsg, pathsMsg)
@@ -509,11 +514,12 @@ export const useStoreLogic = defineStore('storeLogic', () => {
               changeStatus('msgDead', path.firstID, msgID)
               changeStatus('msgDead', path.secID, msgID)
             }
-            setServerStatus(msgID, pathsMsg)
           } else {
             changeStatus('msgDead', path.firstID, msgID)
           }
-        }, userSetting.value.timeSet * 1000)
+          setServerStatus(msgID, pathsMsg)
+          setStatus(sensorID, msgID)
+        }, thisMsg!.time * 1000)
       }
     } else {
       changeStatus('msgDead', path.firstID, msgID)
@@ -554,6 +560,7 @@ export const useStoreLogic = defineStore('storeLogic', () => {
     } else if (firstNode?.msgStatus === 'msgDead') {
       msg.value.allMsgs[msgID].status = 'fail'
     }
+    console.log(msg.value.allMsgs)
 
     return msg.value.allMsgs[msgID].status
   }
@@ -653,17 +660,17 @@ export const useStoreLogic = defineStore('storeLogic', () => {
           }
         })
         const tempHop = hopCnt.value.tempHops
-
+        const thisMsg = msg.value.allMsgs.find((msg) => msg.msgID === msgID)
         tempHop.length > 0 ? tempHop : (tempHop.length = 1)
-        if (msg.value.server.length === 0 && hops.hopCnt <= userSetting.value.hopCntMax) {
+        if (msg.value.server.length === 0 && hops.hopCnt <= thisMsg!.hopCntMax) {
           msg.value.server.push(
             new Server(msgID, hops.hopCnt, serv.msgCnt, hops.firstID, hops.secID)
           )
-        } else if (!tempServer && hops.hopCnt <= userSetting.value.hopCntMax) {
+        } else if (!tempServer && hops.hopCnt <= thisMsg!.hopCntMax) {
           msg.value.server.push(
             new Server(msgID, hops.hopCnt, serv.msgCnt, hops.firstID, hops.secID)
           )
-        } else if (tempServer && hops.hopCnt <= userSetting.value.hopCntMax) {
+        } else if (tempServer && hops.hopCnt <= thisMsg!.hopCntMax) {
           msg.value.server.forEach((server) => {
             server.msgCnt = serv.msgCnt
           })
@@ -678,6 +685,7 @@ export const useStoreLogic = defineStore('storeLogic', () => {
   }
 
   const resetSystem = () => {
+    msg.value.ID = -1
     msg.value.allMsgs = []
     msg.value.msgStatus = []
     paths.value.filterPathsMsg = []
@@ -698,7 +706,6 @@ export const useStoreLogic = defineStore('storeLogic', () => {
     resetSystem,
     findFirstNode,
     hopCnt,
-    userSetting,
     setStatus,
     paths,
     msg

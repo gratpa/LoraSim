@@ -23,12 +23,6 @@ interface IhopCnt {
   currentHop: number
 }
 
-interface IuserSetting {
-  timeSet: number
-  hopCntMax: number
-  retryCntMax: number
-}
-
 interface IServer {
   firstID: number
   secID: number
@@ -91,6 +85,7 @@ interface IMsgBuilder {
   retryCntMax: number
   duplicateMsg: IAllPaths[]
   serverMsg: IAllPaths[]
+  hopCntMax: number
 }
 
 export type {
@@ -101,7 +96,6 @@ export type {
   IMsgRetry,
   IHopCnt,
   IServer,
-  IuserSetting,
   IhopCnt,
   Imsg,
   Ipaths
