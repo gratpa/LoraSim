@@ -182,7 +182,6 @@ const contextMenuItems = ref<unknown[]>([
         geometry: new Geom.Point!(val.coordinate)
       })
       gateways.value.source.addFeature(feature)
-      console.log(feature.getProperties)
     }
   }
 ])

@@ -1,6 +1,6 @@
 <template>
   <div class="grid grid-cols-8 grid-rows-6 justify-center m-2 h-screen font-Lato">
-    <div class="col-start-1 col-end-9 row-start-1 row-end-4">
+    <div class="col-start-1 col-end-9 row-start-1 row-end-4 ml-8">
       <MapView />
     </div>
 
@@ -25,7 +25,7 @@
     >
       <GwInputs />
     </div>
-    <div class="col-start-1 col-end-1 row-start-4 row-end-4 mt-3 ml-5">
+    <div class="col-start-1 col-end-1 row-start-1 row-end-1">
       <button @click=";[valueStore.reset(), logicStore.resetSystem()]">
         <img :src="reset" class="h-6 hover:h-8" />
       </button>

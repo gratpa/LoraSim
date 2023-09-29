@@ -1,6 +1,6 @@
 <template>
   <div class="text-center font-medium text-lg text-amber-500">Server</div>
-  <div class="grid grid-cols-2">
+  <div class="grid grid-cols-1">
     <div v-for="msg of logicStore.msg.allMsgs" :key="msg.msgID">
       <Transition
         enter-from-class="-translate-x-[150%] opacity-0"
@@ -14,21 +14,16 @@
               : 'bg-green-300 m-1  rounded-lg'
           "
           @click=";[logicStore.setPaths(msg.msgID), valueStore.setPoint(msg.sensorID)]"
-          class="grid grid-rows-4 h-24"
         >
-          <div class="row-start-1 row-end-1 ml-2">Msg:</div>
-          <div class="row-start-1 row-end-1 mr-10">{{ msg.msgID }}</div>
-          <div class="row-start-2 row-end-2 ml-2">Sensor:</div>
-          <div class="row-start-2 row-end-2 mr-10">{{ msg.sensorID }}</div>
+          <div>Msg: {{ msg.msgID }}</div>
 
-          <div
-            v-for="status of logicStore.msg.server"
-            :key="status.msgID"
-            class="col-start-1 col-end-2 row-start-3 row-end-3 ml-2"
-          >
+          <div>Sensor: {{ msg.sensorID }}</div>
+
+          <div v-for="status of logicStore.msg.server" :key="status.msgID">
             <div v-if="status.msgID === msg.msgID">
               {{ status.msgCnt }} ✉️ Hops: {{ status.hopCnt }}
-              <div>GW: {{ status.secID }}</div>
+
+              GW: {{ status.secID }}
             </div>
           </div>
         </div>

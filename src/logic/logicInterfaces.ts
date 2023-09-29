@@ -18,8 +18,6 @@ interface Imsg {
 interface IhopCnt {
   allHopCnt: IHopCnt[]
   servHopCnt: IHopCnt[]
-  pathHopCnt: IHopCnt[]
-  tempHops: number[]
   currentHop: number
 }
 

@@ -3,7 +3,6 @@ import { MsgBuilder, AllPaths, MsgStatus, MsgRetry, HopCnt, Server } from './log
 import {
   type IAllPaths,
   type IMsgBuilder,
-  type IServer,
   type IhopCnt,
   type Imsg,
   type Ipaths
@@ -15,8 +14,6 @@ export const useStoreLogic = defineStore('storeLogic', () => {
   const hopCnt = ref<IhopCnt>({
     allHopCnt: [],
     servHopCnt: [],
-    pathHopCnt: [],
-    tempHops: [],
     currentHop: 0
   })
   const msg = ref<Imsg>({
@@ -93,7 +90,7 @@ export const useStoreLogic = defineStore('storeLogic', () => {
         hopCnt.value.currentHop = allhops.hopCnt
       } else hopCnt.value.currentHop = 0
     })
-    console.log(msg.value.allMsgs)
+
     findPath(sensorID, allSensors, allGWs, msgID)
     msg.value.allMsgs
     const sensor: ISensor = allSensors.find((element) => element.id === sensorID)!
@@ -402,11 +399,12 @@ export const useStoreLogic = defineStore('storeLogic', () => {
           pathsMsg.push(path)
           changeStatus('msgServer', path.secID, msgID)
           setStatus(sensorID, msgID)
-          msg.value.msgStatus.forEach((msg) => {
-            if (msg.nodeID === path.secID && msg.msgID === msgID) {
-              msg.msgCnt++
-            }
-          })
+          const index = msg.value.msgStatus.findIndex(
+            (msg) => msg.nodeID === path.secID && msg.msgID === path.msgID
+          )
+          if (index >= 0) {
+            msg.value.msgStatus[index].msgCnt++
+          }
 
           serverMsg.push(path)
           findServerPath(path, pathsMsg, serverMsg)
@@ -416,7 +414,7 @@ export const useStoreLogic = defineStore('storeLogic', () => {
           pathsMsg.push(path)
         }
 
-        setServerStatus(msgID, pathsMsg)
+        setServerStatus(msgID, path)
         const firstStatusNode = msg.value.msgStatus.find(
           (msg) => msg.nodeID === path.firstID && msg.msgID === msgID
         )
@@ -462,6 +460,7 @@ export const useStoreLogic = defineStore('storeLogic', () => {
         hopCnt.value.currentHop = allhops.hopCnt
       }
     })
+
     hopCnt.value.currentHop ? hopCnt.value.currentHop : (hopCnt.value.currentHop = 0)
     const thisMsg = msg.value.allMsgs.find(
       (msg) => msg.msgID === msgID && msg.sensorID === sensorID
@@ -502,11 +501,15 @@ export const useStoreLogic = defineStore('storeLogic', () => {
             const firstStatusNode = msg.value.msgStatus.find((msg) => msg.nodeID === path.firstID)
             const secStatusNode = msg.value.msgStatus.find((msg) => msg.nodeID === path.secID)
             if (path.secCov) {
-              msg.value.msgStatus.forEach((msg) => {
-                if (msg.nodeID === path.secID && msg.msgID === msgID) {
-                  msg.msgCnt++
-                }
-              })
+              const index = msg.value.msgStatus.findIndex(
+                (msg) => msg.nodeID === path.secID && msg.msgID === path.msgID
+              )
+              if (
+                index >= 0 &&
+                pathsMsg.some((msg) => msg.firstID === path.firstID && msg.secID === path.secID)
+              ) {
+                msg.value.msgStatus[index].msgCnt++
+              }
             } else if (
               firstStatusNode?.msgStatus === 'msgIn' &&
               secStatusNode?.msgStatus === 'msgIn'
@@ -517,7 +520,7 @@ export const useStoreLogic = defineStore('storeLogic', () => {
           } else {
             changeStatus('msgDead', path.firstID, msgID)
           }
-          setServerStatus(msgID, pathsMsg)
+          setServerStatus(msgID, path)
           setStatus(sensorID, msgID)
         }, thisMsg!.time * 1000)
       }
@@ -560,7 +563,6 @@ export const useStoreLogic = defineStore('storeLogic', () => {
     } else if (firstNode?.msgStatus === 'msgDead') {
       msg.value.allMsgs[msgID].status = 'fail'
     }
-    console.log(msg.value.allMsgs)
 
     return msg.value.allMsgs[msgID].status
   }
@@ -619,63 +621,47 @@ export const useStoreLogic = defineStore('storeLogic', () => {
     })
   }
 
-  const setServerStatus = (msgID: number, pathsMsg: IAllPaths[]) => {
-    const serverStatus = msg.value.msgStatus.filter((stat) => stat.msgStatus === 'msgServer')
-    const msgCnt = ref<number>(0)
-    serverStatus.forEach((serv) => {
-      msgCnt.value += serv.msgCnt
-    })
+  const setServerStatus = (msgID: number, path: IAllPaths) => {
+    const index = msg.value.msgStatus.findIndex(
+      (stat) => stat.msgStatus === 'msgServer' && stat.msgID === msgID && stat.nodeID === path.secID
+    )
+    if (index >= 0) {
+      hopCnt.value.servHopCnt = hopCnt.value.allHopCnt.filter(
+        (hops) =>
+          hops.secID === msg.value.msgStatus[index].nodeID &&
+          hops.msgID === msg.value.msgStatus[index].msgID
+      )
+    }
 
-    hopCnt.value.allHopCnt.forEach((hop) => {
-      pathsMsg.forEach((paths) => {
-        if (
-          paths.firstID === hop.firstID &&
-          paths.secID === hop.secID &&
-          hop.msgID === paths.msgID
-        ) {
-          hopCnt.value.pathHopCnt.push(hop)
-        }
-      })
-    })
+    hopCnt.value.servHopCnt.forEach((serv) => {
+      const iServerStatus = msg.value.server.findIndex(
+        (stat) =>
+          serv.firstID === stat.firstID && serv.secID === stat.secID && serv.msgID === stat.msgID
+      )
 
-    serverStatus.forEach((serv) => {
-      hopCnt.value.pathHopCnt.forEach((hops) => {
-        if (hops.secID === serv.nodeID) hopCnt.value.servHopCnt.push(hops)
-      })
-    })
-
-    serverStatus.forEach((serv) => {
-      hopCnt.value.servHopCnt.forEach((hops) => {
-        const tempServer: IServer = msg.value.server.find(
-          (temp) =>
-            temp.msgID === hops.msgID &&
-            hops.secID === temp.secID &&
-            hops.firstID === temp.firstID &&
-            temp.hopCnt === hops.hopCnt
-        )!
-
-        msg.value.server.forEach((serv) => {
-          if (serv.firstID === hops.firstID && serv.secID && hops.secID && hops.msgID === msgID) {
-            hopCnt.value.tempHops.push(hops.hopCnt)
-          }
-        })
-        const tempHop = hopCnt.value.tempHops
-        const thisMsg = msg.value.allMsgs.find((msg) => msg.msgID === msgID)
-        tempHop.length > 0 ? tempHop : (tempHop.length = 1)
-        if (msg.value.server.length === 0 && hops.hopCnt <= thisMsg!.hopCntMax) {
-          msg.value.server.push(
-            new Server(msgID, hops.hopCnt, serv.msgCnt, hops.firstID, hops.secID)
+      if (
+        index >= 0 &&
+        iServerStatus >= 0 &&
+        msg.value.msgStatus[index].msgCnt === msg.value.server[iServerStatus].msgCnt
+      ) {
+        return
+      } else if (
+        index >= 0 &&
+        iServerStatus >= 0 &&
+        msg.value.msgStatus[index].msgCnt !== msg.value.server[iServerStatus].msgCnt
+      ) {
+        msg.value.server[iServerStatus].msgCnt = msg.value.msgStatus[index].msgCnt
+      } else if (iServerStatus < 0) {
+        msg.value.server.push(
+          new Server(
+            msgID,
+            serv.hopCnt,
+            msg.value.msgStatus[index].msgCnt,
+            serv.firstID,
+            serv.secID
           )
-        } else if (!tempServer && hops.hopCnt <= thisMsg!.hopCntMax) {
-          msg.value.server.push(
-            new Server(msgID, hops.hopCnt, serv.msgCnt, hops.firstID, hops.secID)
-          )
-        } else if (tempServer && hops.hopCnt <= thisMsg!.hopCntMax) {
-          msg.value.server.forEach((server) => {
-            server.msgCnt = serv.msgCnt
-          })
-        }
-      })
+        )
+      }
     })
   }
   const chosenMsg = ref<IMsgBuilder>()
@@ -692,10 +678,8 @@ export const useStoreLogic = defineStore('storeLogic', () => {
     msg.value.retryMsg = []
     paths.value.allPathsMsg = []
     msg.value.servNodeStatus = []
-    hopCnt.value.tempHops = []
     msg.value.server = []
     hopCnt.value.servHopCnt = []
-    hopCnt.value.pathHopCnt = []
     hopCnt.value.allHopCnt = []
   }
 
