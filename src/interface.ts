@@ -1,29 +1,28 @@
-export interface ISensor {
+interface ISensor {
   id: number
   coords: number[]
   range: number
 }
 
-export interface IGW {
+interface IGW {
   id: number
   coords: number[]
   range: number
   hasCoverage: boolean
 }
-
-export interface Icallback {
+interface Icallback {
   data: null
   coordinate: number[]
 }
 
-export interface Isensor {
+interface Isensor {
   id: number
   range: number
   coord: number[][]
   data?: ISensor
   allSensors: ISensor[]
 }
-export interface Igw {
+interface Igw {
   id: number
   range: number
   coord: number[][]
@@ -31,8 +30,7 @@ export interface Igw {
   allGWs: IGW[]
   hasCoverage: boolean
 }
-
-export interface ImapSetting {
+interface ImapSetting {
   zoom: number
   rotation: number
   size: number[]
@@ -40,20 +38,31 @@ export interface ImapSetting {
   extent: number[]
 }
 
-export interface Iprojection {
+interface Iprojection {
   code: string
   units: string
   extent: number[]
 }
 
-export interface Ievent {
-  selected: {
-    0: {
-      values_: {
-        geometry: {
-          flatCoordinates: number[]
-        }
-      }
-    }
-  }
+interface IAllCoords {
+  sensor: number[][]
+  gw: number[][]
+  sensorRange: number
+}
+interface IsettingNodes {
+  edit: boolean
+  start: boolean
+  iconVisible: boolean
+}
+
+export type {
+  ISensor,
+  IGW,
+  Icallback,
+  Isensor,
+  Igw,
+  ImapSetting,
+  Iprojection,
+  IAllCoords,
+  IsettingNodes
 }
