@@ -51,7 +51,7 @@
               ]
             "
           >
-            <img :src="send" class="h-8" />
+            <img src="/src/assets/send.png" class="h-8" />
           </button>
           <div class="col-start-3 col-end-4 row-start-1 row-end-1">Time</div>
           <input
@@ -77,5 +77,4 @@ import { useStoreLogic } from '@/logic/storeLogic'
 const logicStore = useStoreLogic()
 import { useValueStore } from '@/stores/valueStore'
 const valueStore = useValueStore()
-import send from '@/assets/send.png'
 </script>

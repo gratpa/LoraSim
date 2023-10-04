@@ -27,7 +27,7 @@
     </div>
     <div class="col-start-1 col-end-1 row-start-1 row-end-1">
       <button @click=";[valueStore.reset(), logicStore.resetSystem()]">
-        <img :src="reset" class="h-6 hover:h-8" />
+        <img src="/src/assets/reset.png" class="h-6 hover:h-8" />
       </button>
     </div>
 
@@ -44,5 +44,4 @@ import { useValueStore } from '@/stores/valueStore'
 const valueStore = useValueStore()
 import { useStoreLogic } from '@/logic/storeLogic'
 const logicStore = useStoreLogic()
-import reset from '@/assets/reset.png'
 </script>

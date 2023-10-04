@@ -30,7 +30,7 @@
         class="motion-safe:hover:-translate-y-0.5 motion-safe:transition col-start-3 col-end-3 row-start-3 row-end-3 ml-5"
         @click="logicStore.buildMsg(sensor.id, valueStore.sensor.allSensors, valueStore.gw.allGWs)"
       >
-        <img :src="add_message" class="h-8" />
+        <img src="/src/assets/add_message.png" class="h-8" />
       </button>
     </div>
   </div>
@@ -41,5 +41,4 @@ const valueStore = useValueStore()
 import { useStoreLogic } from '@/logic/storeLogic'
 
 const logicStore = useStoreLogic()
-import add_message from '@/assets/add_message.png'
 </script>

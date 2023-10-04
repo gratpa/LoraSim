@@ -54,7 +54,11 @@
       <ol-vector-layer>
         <ol-source-vector ref="sensors" :updateWhileInteracting="true"> </ol-source-vector>
         <ol-style>
-          <ol-style-icon :src="sensor" :scale="0.4" :attributions="markerCopyright"></ol-style-icon>
+          <ol-style-icon
+            src="/src/assets/sensor.png"
+            :scale="0.4"
+            :attributions="markerCopyright"
+          ></ol-style-icon>
         </ol-style>
       </ol-vector-layer>
 
@@ -63,7 +67,7 @@
 
         <ol-style>
           <ol-style-icon
-            :src="gateway"
+            src="/src/assets/gateway.png"
             :scale="0.5"
             :attributions="markerCopyright"
           ></ol-style-icon>
@@ -163,7 +167,8 @@ const contextMenuItems = ref<unknown[]>([
       valueStore.sensor.id = 1000 + valueStore.sensor.coord.length
 
       const feature = new Feature({
-        geometry: new Geom.Point!(val.coordinate)
+        // @ts-ignore
+        geometry: new Geom.Point(val.coordinate)
       })
       sensors.value.source.addFeature(feature)
     }
@@ -179,7 +184,8 @@ const contextMenuItems = ref<unknown[]>([
       valueStore.gw.id = 2000 + valueStore.gw.coord.length
 
       const feature = new Feature({
-        geometry: new Geom.Point!(val.coordinate)
+        // @ts-ignore
+        geometry: new Geom.Point(val.coordinate)
       })
       gateways.value.source.addFeature(feature)
     }
