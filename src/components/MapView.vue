@@ -55,7 +55,7 @@
         <ol-source-vector ref="sensors" :updateWhileInteracting="true"> </ol-source-vector>
         <ol-style>
           <ol-style-icon
-            src="../assets/sensor.png"
+            :src=sensor
             :scale="0.4"
             :attributions="markerCopyright"
           ></ol-style-icon>
@@ -67,7 +67,7 @@
 
         <ol-style>
           <ol-style-icon
-            src="../assets/gateway.png"
+            :src=gateway
             :scale="0.5"
             :attributions="markerCopyright"
           ></ol-style-icon>
@@ -139,9 +139,9 @@ import { useStoreLogic } from '@/logic/storeLogic'
 const logicStore = useStoreLogic()
 import { ref, inject } from 'vue'
 
-import gateway from '../assets/gateway.png'
-import sensor from '../assets/sensor.png'
-import background from '../assets/background.jpg'
+import gateway from '@/assets/gateway.png'
+import sensor from '@/assets/sensor.png'
+import background from '@/assets/background.jpg'
 
 import Feature from 'ol/Feature.js'
 import { mapSetting } from '@/constValues'
