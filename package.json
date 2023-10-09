@@ -2,7 +2,7 @@
   "name": "lorasim",
   "version": "0.0.0",
   "private": true,
-  "homepage": "https://gratpa.github.io/LoraSim/"
+  "homepage": "https://gratpa.github.io/LoraSim/",
   "scripts": {
     "dev": "vite",
     "build": "run-p type-check build-only",
