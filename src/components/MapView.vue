@@ -55,7 +55,7 @@
         <ol-source-vector ref="sensors" :updateWhileInteracting="true"> </ol-source-vector>
         <ol-style>
           <ol-style-icon
-            src="/sensor.png"
+            src="../assets/sensor.png"
             :scale="0.4"
             :attributions="markerCopyright"
           ></ol-style-icon>
@@ -67,7 +67,7 @@
 
         <ol-style>
           <ol-style-icon
-            src="/gateway.png"
+            src="../assets/gateway.png"
             :scale="0.5"
             :attributions="markerCopyright"
           ></ol-style-icon>
