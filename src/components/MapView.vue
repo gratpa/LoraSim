@@ -139,9 +139,9 @@ import { useStoreLogic } from '@/logic/storeLogic'
 const logicStore = useStoreLogic()
 import { ref, inject } from 'vue'
 
-import gateway from '@/assets/gateway.png'
-import sensor from '@/assets/sensor.png'
-import background from '@/assets/background.jpg'
+import gateway from '../assets/gateway.png'
+import sensor from '../assets/sensor.png'
+import background from '../assets/background.jpg'
 
 import Feature from 'ol/Feature.js'
 import { mapSetting } from '@/constValues'
